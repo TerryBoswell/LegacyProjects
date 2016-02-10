@@ -1,0 +1,1 @@
+runas /savecred /user:shaneedmonds RefreshLocalAgent.bat
