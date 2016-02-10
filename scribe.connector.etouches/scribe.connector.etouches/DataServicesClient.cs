@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace Scribe.Connector.etouches
 {
@@ -90,9 +91,9 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId)
+        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
-            return GetDataset(baseUrl, "eventlist.json", accesstoken, accountId);            
+            return GetDataset(baseUrl, "eventlist.json", accesstoken, accountId, null, greaterThan, lessThan);            
         }
 
         /*
@@ -142,7 +143,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListSessions(string baseUrl, string accesstoken, string accountId, string eventId)
         {
-            return GetDataset(baseUrl, "sessionlist.json", accesstoken, accountId, eventId);
+            return GetDatasetIteratively(baseUrl, "sessionlist.json", accesstoken, accountId, eventId);
         }
 
         /*
@@ -152,7 +153,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListSessionTracks(string baseUrl, string accesstoken, string accountId, string eventId)
         {
-            return GetDataset(baseUrl, "sessiontracklist.json", accesstoken, accountId, eventId);
+            return GetDatasetIteratively(baseUrl, "sessiontracklist.json", accesstoken, accountId, eventId);
         }
 
         /*
@@ -179,9 +180,9 @@ namespace Scribe.Connector.etouches
             return http;
         }
         private static DataSet GetDataset(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null)
+            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
-            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId);
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, greaterThan, lessThan);
             if (result == null)
                 throw new ApplicationException("Result of get was null");
             DataSet ds = null;
@@ -208,14 +209,56 @@ namespace Scribe.Connector.etouches
             return json;
         }
 
+        private static DataSet GetDatasetIteratively(string baseUrl, string action, string accesstoken, string accountId = null,
+            string eventId = null)
+        {
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId);
+            if (result == null)
+                throw new ApplicationException("Result of get was null");
+            DataSet ds = null;
+            string plainJson = result.RawText;
+            try
+            {
+                ds = ConvertDataSetIteratively(plainJson);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Error : {ex.Message} while deserializing {plainJson}");
+            }
+            return ds;
+        }
+        public static DataSet ConvertDataSetIteratively(string json)
+        {
+            var jsonLinq = JObject.Parse(json);
 
+            // Find the first array using Linq
+            var srcArray = jsonLinq.Descendants().Where(d => d is JArray).First();
+            var trgArray = new JArray();
+            foreach (JObject row in srcArray.Children<JObject>())
+            {
+                var cleanRow = new JObject();
+                foreach (JProperty column in row.Properties())
+                {
+                    // Only include JValue types
+                    if (column.Value is JValue)
+                    {
+                        cleanRow.Add(column.Name, column.Value);
+                    }
+                }
+
+                trgArray.Add(cleanRow);
+            }
+            DataSet ds = new DataSet();
+            ds.Tables.Add(JsonConvert.DeserializeObject<DataTable>(trgArray.ToString()));
+            return ds;
+        }
 
 
         private static HttpResponse DoHttpGetInternal(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null)
+            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
             var http = NewHttpClient();
-            var uri = new UriBuilder(baseUrl);
+            //var uri = new UriBuilder(baseUrl);
             if (String.IsNullOrEmpty(action))
                 throw new ApplicationException("An Action must be provided");
             if (String.IsNullOrEmpty(baseUrl))
@@ -227,13 +270,27 @@ namespace Scribe.Connector.etouches
 
             var path = string.Empty;
             if (String.IsNullOrEmpty(eventId))
-                path = $"{action}/{accountId}";
+                path = $"{baseUrl}/{action}/{accountId}?accesstoken={accesstoken}";
             else
-                path = $"{action}/{accountId}/{eventId}";
+                path = $"{baseUrl}/{action}/{accountId}/{eventId}?accesstoken={accesstoken}";
 
-            uri.Path = path;
-            return http.Get(uri.ToString(), new { accesstoken = accesstoken });
+            if (lessThan.HasValue)
+            {
+                var ltDate = lessThan.Value.ToString("yyyy-MM-dd");
+                path = $"{path}&lastmodified-lt='{ltDate}'";
+            }
+            if (greaterThan.HasValue)
+            {
+                var gtDate = greaterThan.Value.ToString("yyyy-MM-dd");
+                path = $"{path}&lastmodified-gt='{gtDate}'";
+            }
+            //uri.Path = path;
+            //return http.Get(uri.ToString(), new { accesstoken = accesstoken });
+            return http.Get(path);
         }
+
+       
+
         #endregion
         
 
