@@ -105,9 +105,9 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
-            return GetDataset(baseUrl, "attendeelist.json", accesstoken, accountId, eventId);            
+            return GetDataset(baseUrl, "attendeelist.json", accesstoken, accountId, eventId, greaterThan, lessThan);            
         }
         /*
         /regsessionlist/[accountid]/[eventid]*
