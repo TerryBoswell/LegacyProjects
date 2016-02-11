@@ -29,7 +29,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         {
             System.DateTime? gtDate = null;
             System.DateTime? ltDate = null;
-            if (query.Constraints.ExpressionType == ExpressionType.Comparison)
+            if (query != null && query.Constraints != null && query.Constraints.ExpressionType == ExpressionType.Comparison)
             {
                 ComparisonExpression lookupCondition = query.Constraints as ComparisonExpression;
                 if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Equals("Attendee.lastmodified", System.StringComparison.OrdinalIgnoreCase))
@@ -42,7 +42,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
             var filteredRows = table.Select(query.ToSelectExpression());
             return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
-        }    
+        }
 
     }
 }

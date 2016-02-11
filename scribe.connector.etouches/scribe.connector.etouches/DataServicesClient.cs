@@ -107,7 +107,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
-            return GetDataset(baseUrl, "attendeelist.json", accesstoken, accountId, eventId, greaterThan, lessThan);            
+            return GetDatasetIteratively(baseUrl, "attendeelist.json", accesstoken, accountId, eventId, greaterThan, lessThan);            
         }
         /*
         /regsessionlist/[accountid]/[eventid]*
@@ -210,9 +210,9 @@ namespace Scribe.Connector.etouches
         }
 
         private static DataSet GetDatasetIteratively(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null)
+            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
         {
-            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId);
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, greaterThan, lessThan);
             if (result == null)
                 throw new ApplicationException("Result of get was null");
             DataSet ds = null;
@@ -242,6 +242,9 @@ namespace Scribe.Connector.etouches
                     // Only include JValue types
                     if (column.Value is JValue)
                     {
+                        //We need to clean up columns of type date that are represented this way for nulls
+                        if (column.Value.ToString().Equals("0000-00-00 00:00:00", StringComparison.OrdinalIgnoreCase))
+                            column.Value = "";
                         cleanRow.Add(column.Name, column.Value);
                     }
                 }
