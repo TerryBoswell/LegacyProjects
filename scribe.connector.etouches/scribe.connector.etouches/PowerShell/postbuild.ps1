@@ -30,7 +30,7 @@ else
    [System.Diagnostics.Process]::Start($newProcess);
    
    # Exit from the current, unelevated, process
-   exit 
+   exit
    }
 Write-Host "Stopping Service";
 stop-service -displayname "Scribe Online Agent"
