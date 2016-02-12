@@ -119,6 +119,14 @@ namespace Scribe.Connector.Test
         }
 
         [TestMethod]
+        public void TestListEventsWithAttendeeDate()
+        {
+            VerifyAccessToken();
+            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId, null, null, DateTime.Now.AddDays(-30));
+            Assert.IsNotNull(data);
+        }
+
+        [TestMethod]
         public void TestListRegSessions()
         {
             VerifyAccessToken();

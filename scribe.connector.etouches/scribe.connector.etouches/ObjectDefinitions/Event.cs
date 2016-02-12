@@ -26,7 +26,8 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
-            var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, this.AccountId);
+            this.SetQuery(query);
+            var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.ModifiedAfterDate, this.AttendeeModifiedAfterDate);
             var table = ds.Tables["ResultSet"];
             var filteredRows = table.Select(query.ToSelectExpression());
             return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);

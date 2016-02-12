@@ -11,8 +11,14 @@ namespace Scribe.Connector.etouches
     
     public static class DataServicesClient
     {
+        #region Reserved Property Names For Rest Calls
+        /// <summary>
+        /// This is the property we will look for to pass to the lastmodified-lt query parameter in selected values
+        /// </summary>
+        public static string LastModifiedParameter = "lastmodified";
 
-        
+        public static string AttendeeLastModifiedParameter = "attendees_lastmodified";
+        #endregion
 
         public static string Authorize(string baseUrl, string accountId, string apiKey)
         {
@@ -91,9 +97,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId, DateTime? greaterThan = null, DateTime? lessThan = null)
+        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, DateTime? attendeesModifiedAfter = null)
         {
-            return GetDataset(baseUrl, "eventlist.json", accesstoken, accountId, null, greaterThan, lessThan);            
+            string aQuery = string.Empty;
+            if (attendeesModifiedAfter.HasValue)
+            {
+                var d = attendeesModifiedAfter.Value.ToString("yyyy-MM-dd");
+                aQuery = $"attendees_modified-gt={d}";
+            }
+            return GetDatasetIteratively(baseUrl, "eventlist.json", accesstoken, accountId, null, modifiedAfter, modifiedBefore, aQuery);            
         }
 
         /*
@@ -105,9 +117,9 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? greaterThan = null, DateTime? lessThan = null)
+        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null)
         {
-            return GetDatasetIteratively(baseUrl, "attendeelist.json", accesstoken, accountId, eventId, greaterThan, lessThan);            
+            return GetDatasetIteratively(baseUrl, "attendeelist.json", accesstoken, accountId, eventId, modifiedAfter, modifiedBefore);            
         }
         /*
         /regsessionlist/[accountid]/[eventid]*
@@ -120,7 +132,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListRegSessions(string baseUrl, string accesstoken, string accountId, string eventId)
         {
-            return GetDataset(baseUrl, "regsessionlist.json", accesstoken, accountId, eventId);            
+            return GetDatasetIteratively(baseUrl, "regsessionlist.json", accesstoken, accountId, eventId);            
         }
 
         /*
@@ -131,7 +143,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListSpeakers(string baseUrl, string accesstoken, string accountId, string eventId)
         {
-            return GetDataset(baseUrl, "speakerlist.json", accesstoken, accountId, eventId);
+            return GetDatasetIteratively(baseUrl, "speakerlist.json", accesstoken, accountId, eventId);
         }
 
 
@@ -163,7 +175,7 @@ namespace Scribe.Connector.etouches
         */
         public static DataSet ListMeetings(string baseUrl, string accesstoken, string accountId, string eventId)
         {
-            return GetDataset(baseUrl, "meetinglist.json", accesstoken, accountId, eventId);
+            return GetDatasetIteratively(baseUrl, "meetinglist.json", accesstoken, accountId, eventId);
         }
 
         #endregion
@@ -179,10 +191,24 @@ namespace Scribe.Connector.etouches
             http.StreamResponse = false;
             return http;
         }
+
+        /// <summary>
+        /// This method will load the data set using the Json Serialize directly to a dataset
+        /// This method will fail on the loading of entities with properties that are collections
+        /// This method does not convert unix date representation of null dates
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="action"></param>
+        /// <param name="accesstoken"></param>
+        /// <param name="accountId"></param>
+        /// <param name="eventId"></param>
+        /// <param name="modifiedAfter"></param>
+        /// <param name="modifiedBefore"></param>
+        /// <returns></returns>
         private static DataSet GetDataset(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
+            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null)
         {
-            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, greaterThan, lessThan);
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, modifiedAfter, modifiedBefore, additionCondition);
             if (result == null)
                 throw new ApplicationException("Result of get was null");
             DataSet ds = null;
@@ -209,10 +235,23 @@ namespace Scribe.Connector.etouches
             return json;
         }
 
+        /// <summary>
+        /// This method will load a dataset iteratively. It converts one row and column at a time
+        /// it protects against properties that are collections ignoring them
+        /// it will protect against unix representation of null dates
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="action"></param>
+        /// <param name="accesstoken"></param>
+        /// <param name="accountId"></param>
+        /// <param name="eventId"></param>
+        /// <param name="modifiedAfter"></param>
+        /// <param name="modifiedBefore"></param>
+        /// <returns></returns>
         private static DataSet GetDatasetIteratively(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
+            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null)
         {
-            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, greaterThan, lessThan);
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, modifiedAfter, modifiedBefore, additionCondition);
             if (result == null)
                 throw new ApplicationException("Result of get was null");
             DataSet ds = null;
@@ -245,6 +284,10 @@ namespace Scribe.Connector.etouches
                         //We need to clean up columns of type date that are represented this way for nulls
                         if (column.Value.ToString().Equals("0000-00-00 00:00:00", StringComparison.OrdinalIgnoreCase))
                             column.Value = "";
+                        if (column.Value.ToString().Equals("0000 - 00 - 00", StringComparison.OrdinalIgnoreCase))
+                            column.Value = "";
+                        if (column.Value.ToString().Equals("0000-00-00", StringComparison.OrdinalIgnoreCase))
+                            column.Value = "";
                         cleanRow.Add(column.Name, column.Value);
                     }
                 }
@@ -253,12 +296,24 @@ namespace Scribe.Connector.etouches
             }
             DataSet ds = new DataSet();
             ds.Tables.Add(JsonConvert.DeserializeObject<DataTable>(trgArray.ToString()));
+            ds.Tables[0].TableName = "ResultSet";
             return ds;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseUrl"></param>
+        /// <param name="action"></param>
+        /// <param name="accesstoken"></param>
+        /// <param name="accountId"></param>
+        /// <param name="eventId"></param>
+        /// <param name="modifiedAfter">Using standard lastmodified-gt parameter</param>
+        /// <param name="modifiedBefore">Using standard lastmodified-lt=</param>
+        /// <param name="additionCondition">A custom Query parameter to pass that is not a common one</param>
+        /// <returns></returns>
         private static HttpResponse DoHttpGetInternal(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null, DateTime? greaterThan = null, DateTime? lessThan = null)
+            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null)
         {
             var http = NewHttpClient();
             //var uri = new UriBuilder(baseUrl);
@@ -277,18 +332,19 @@ namespace Scribe.Connector.etouches
             else
                 path = $"{baseUrl}/{action}/{accountId}/{eventId}?accesstoken={accesstoken}";
 
-            if (lessThan.HasValue)
+            if (modifiedBefore.HasValue)
             {
-                var ltDate = lessThan.Value.ToString("yyyy-MM-dd");
+                var ltDate = modifiedBefore.Value.ToString("yyyy-MM-dd");
                 path = $"{path}&lastmodified-lt='{ltDate}'";
             }
-            if (greaterThan.HasValue)
+            if (modifiedAfter.HasValue)
             {
-                var gtDate = greaterThan.Value.ToString("yyyy-MM-dd");
+                var gtDate = modifiedAfter.Value.ToString("yyyy-MM-dd");
                 path = $"{path}&lastmodified-gt='{gtDate}'";
             }
-            //uri.Path = path;
-            //return http.Get(uri.ToString(), new { accesstoken = accesstoken });
+
+            if (!String.IsNullOrEmpty(additionCondition))
+                path = $"{path}&{additionCondition}";
             return http.Get(path);
         }
 
