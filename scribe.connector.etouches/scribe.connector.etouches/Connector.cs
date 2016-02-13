@@ -168,6 +168,15 @@ namespace Scribe.Connector.etouches
                 case "RegSession":
                     var regSession = new ObjectDefinitions.RegSession(Connector.AccountId, Connector.EventId);
                     return regSession.ExecuteQuery(query);
+                case "Session":
+                    var session = new ObjectDefinitions.Session(Connector.AccountId, Connector.EventId);
+                    return session.ExecuteQuery(query);
+                case "Meeting":
+                    var meeting = new ObjectDefinitions.Meeting(Connector.AccountId, Connector.EventId);
+                    return meeting.ExecuteQuery(query);
+                case "Speaker":
+                    var speaker = new ObjectDefinitions.Speaker(Connector.AccountId, Connector.EventId);
+                    return speaker.ExecuteQuery(query);
                 default:
                     throw new NotImplementedException();
             }

@@ -8,13 +8,11 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         public Attendee(string accountId, string eventId) : base(accountId, eventId)
         {
-
             FullName = "Attendee";
             Description = "Attendee";
             Hidden = false;
             Name = "Attendee";
-            SupportedActionFullNames = new List<string> { "Query" };
-
+            SupportedActionFullNames = new List<string> { "Query" };            
             setPropertyDefinitions();
         }
 

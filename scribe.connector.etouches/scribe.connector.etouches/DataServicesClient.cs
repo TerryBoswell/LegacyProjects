@@ -283,11 +283,11 @@ namespace Scribe.Connector.etouches
                     {
                         //We need to clean up columns of type date that are represented this way for nulls
                         if (column.Value.ToString().Equals("0000-00-00 00:00:00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = "";
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
                         if (column.Value.ToString().Equals("0000 - 00 - 00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = "";
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
                         if (column.Value.ToString().Equals("0000-00-00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = "";
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
                         cleanRow.Add(column.Name, column.Value);
                     }
                 }
