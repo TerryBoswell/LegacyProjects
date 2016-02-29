@@ -1,0 +1,26 @@
+query.RootEntity.ChildList[0]
+{Scribe.Core.ConnectorApi.Query.QueryEntity}
+    ChildList: Count = 0
+    KeyPropertyList: Count = 0
+    Name: "Attendee"
+    ObjectDefinitionFullName: "RegSession"
+    ParentQueryEntity: {Scribe.Core.ConnectorApi.Query.QueryEntity}
+    PropertyList: Count = 1
+    RelationshipToParent: {Scribe.Core.ConnectorApi.Query.Relationship}
+    SequenceList: Count = 0
+query.RootEntity.ChildList[0].RelationshipToParent
+{Scribe.Core.ConnectorApi.Query.Relationship}
+    ChildProperties: "attendeeid"
+    IsRequired: false
+    ParentProperties: "attendeeid"
+
+
+
+
+    Speaker => Event (Parent) fk Event_ID
+    Session => Event (Parent) fk Event_ID
+    Session => RegSession(Child) fk Session_ID
+    SessionTrack => Session(Parent) fk Session_ID
+    Event(Parent) => Meeting fk Event_ID
+
+    Make TTL Connector Parameter

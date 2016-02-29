@@ -1,0 +1,72 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{440D1AC0-40FB-40A0-A957-FD90C42C03A7}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		Scribe.Connector.Cdk.Sample.vsmdi = Scribe.Connector.Cdk.Sample.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.RS_Source", "Scribe.Connector.Cdk.Sample.RS_Source\Scribe.Connector.Cdk.Sample.RS_Source.csproj", "{07D28C8E-68E1-45BA-B61F-8D70EC15B800}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.RS_Source.Test", "Scribe.Connector.Cdk.Sample.RS_Source.Test\Scribe.Connector.Cdk.Sample.RS_Source.Test.csproj", "{EFA6453F-E367-4D43-BAE3-FD2AA608AD56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.RS_Target", "Scribe.Connector.Cdk.Sample.RS_Target\Scribe.Connector.Cdk.Sample.RS_Target.csproj", "{58452B40-62C3-4B3A-B838-894CD5039A60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.RS_Target.Test", "Scribe.Connector.Cdk.Sample.RS_Target.Test\Scribe.Connector.Cdk.Sample.RS_Target.Test.csproj", "{08F324A6-1EB7-4ABB-A609-ED3EF771FCAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.SYS", "Scribe.Connector.Cdk.Sample.SYS\Scribe.Connector.Cdk.Sample.SYS.csproj", "{BBA7B363-6F7C-467E-9F5A-A3F786B77F5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.SYS.Test", "Scribe.Connector.Cdk.Sample.SYS.Test\Scribe.Connector.Cdk.Sample.SYS.Test.csproj", "{D8567106-0343-4679-A252-6F4C11ADD98F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.Rest.Sys", "Scribe.Connector.Cdk.Sample.Rest.Sys\Scribe.Connector.Cdk.Sample.Rest.Sys.csproj", "{B104AEE4-A2C8-4A2B-8950-6BE0683BCBD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scribe.Connector.Cdk.Sample.Rest.Sys.Test", "Scribe.Connector.Cdk.Sample.Rest.Sys.Test\Scribe.Connector.Cdk.Sample.Rest.Sys.Test.csproj", "{CADED883-445C-40D2-A3DB-35CF1D0AFBBE}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = Scribe.Connector.Cdk.Sample.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07D28C8E-68E1-45BA-B61F-8D70EC15B800}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07D28C8E-68E1-45BA-B61F-8D70EC15B800}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07D28C8E-68E1-45BA-B61F-8D70EC15B800}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07D28C8E-68E1-45BA-B61F-8D70EC15B800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFA6453F-E367-4D43-BAE3-FD2AA608AD56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA6453F-E367-4D43-BAE3-FD2AA608AD56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA6453F-E367-4D43-BAE3-FD2AA608AD56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA6453F-E367-4D43-BAE3-FD2AA608AD56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58452B40-62C3-4B3A-B838-894CD5039A60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58452B40-62C3-4B3A-B838-894CD5039A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58452B40-62C3-4B3A-B838-894CD5039A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58452B40-62C3-4B3A-B838-894CD5039A60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08F324A6-1EB7-4ABB-A609-ED3EF771FCAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08F324A6-1EB7-4ABB-A609-ED3EF771FCAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08F324A6-1EB7-4ABB-A609-ED3EF771FCAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08F324A6-1EB7-4ABB-A609-ED3EF771FCAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA7B363-6F7C-467E-9F5A-A3F786B77F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA7B363-6F7C-467E-9F5A-A3F786B77F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA7B363-6F7C-467E-9F5A-A3F786B77F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA7B363-6F7C-467E-9F5A-A3F786B77F5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8567106-0343-4679-A252-6F4C11ADD98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8567106-0343-4679-A252-6F4C11ADD98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8567106-0343-4679-A252-6F4C11ADD98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8567106-0343-4679-A252-6F4C11ADD98F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B104AEE4-A2C8-4A2B-8950-6BE0683BCBD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B104AEE4-A2C8-4A2B-8950-6BE0683BCBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B104AEE4-A2C8-4A2B-8950-6BE0683BCBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B104AEE4-A2C8-4A2B-8950-6BE0683BCBD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADED883-445C-40D2-A3DB-35CF1D0AFBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADED883-445C-40D2-A3DB-35CF1D0AFBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADED883-445C-40D2-A3DB-35CF1D0AFBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADED883-445C-40D2-A3DB-35CF1D0AFBBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

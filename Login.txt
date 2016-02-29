@@ -6,8 +6,8 @@ AccountId  3037
 EventId  86972
 api key 0742cb104f8a632bcab90400a3d16b622715b70e
 Base Url http://ec2-54-175-237-66.compute-1.amazonaws.com
-
 https://scribena-sandbox1.cloudapp.net/ScribeOnline.aspx#/Home
+
 
 API
 Calls
@@ -24,6 +24,8 @@ EventMetaData
 
 Week of 2/1 - 3hrs
 Week of 2/8 - 4hrs
+week of 2/15 - 3hrs
+week of 2/22 - 3Hrs
 
 
  https://datasvc.etouches.com/sessionmetadata/3037/86972?accesstoken=j0gomFFX1TGSGCET0UBdsE0375iiIFByr5wH28XipBjQcie
@@ -32,10 +34,4 @@ Week of 2/8 - 4hrs
 
 Event.attendees_lastmodified
 
-1) Are we supporting Creates/Updates/Upserts/Deletes?
-2) Do we need to support paging?
-3) There is a method called SetQuery in the base object that will set the parameters. This assumes there is a last modified date present or won't do anything.
-4) There are certain fields we look for that will be used to pass to the Scribe api calls. These are now statics in the DataServicesClient
-
-
-Investigate STart Date/Dates in general
+powershell -executionpolicy bypass -File .\postbuild.ps1

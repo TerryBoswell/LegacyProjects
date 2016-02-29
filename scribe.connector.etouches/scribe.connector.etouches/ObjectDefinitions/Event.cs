@@ -1,19 +1,15 @@
 ﻿using Scribe.Core.ConnectorApi;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Scribe.Connector.etouches.ObjectDefinitions
 {
     class Event : BaseObject
     {
 
-        public Event(string accountId, string eventId) : base(accountId, eventId)
+        public Event(string accountId, string eventId) : base(accountId, eventId,
+            Constants.Event_Name, Constants.Event_FullName, Constants.Event_Description)
         {
-
-            FullName = "Event";
-            Description = "A single Event";
-            Hidden = false;
-            Name = "Event";
-            SupportedActionFullNames = new List<string> { "Query" };
             setPropertyDefinitions();
         }
 
@@ -30,11 +26,30 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.ModifiedAfterDate, this.AttendeeModifiedAfterDate);
             var table = ds.Tables["ResultSet"];
             var filteredRows = table.Select(query.ToSelectExpression());
-            return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
-        }    
+            var dataEntities = filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
+            return dataEntities;
+        }
 
+        internal void PopulateChildData(IEnumerable<DataEntity> dataEntities)
+        {
+            if (!this.HasChildren)
+                return;
+            foreach (var de in dataEntities)
+            {
+                de.Children = new Core.ConnectorApi.Query.EntityChildren();
+                if (this.ChildNames.Any(x => x.Equals(this.Name)))
+                {
+                    var ds = DataServicesClient.ListSpeakers(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var table = ds.Tables["ResultSet"];
+                    var filteredRows = table.Select($"{Constants.Speaker_PK} = {de.Properties[Constants.Speaker_PK]}");
+                    List<DataEntity> children = new List<DataEntity>();
+                    foreach (var c in filteredRows.ToDataEntities(Name))
+                        children.Add(c);
+                    de.Children.Add(Constants.Speaker_Name, children);
+                }
+            }
+        }
 
-        
 
     }
 }

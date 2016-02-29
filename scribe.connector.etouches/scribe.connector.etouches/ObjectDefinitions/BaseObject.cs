@@ -2,6 +2,7 @@
 using Scribe.Core.ConnectorApi;
 using Scribe.Core.ConnectorApi.Metadata;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Scribe.Connector.etouches.ObjectDefinitions
 {
@@ -12,10 +13,17 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         protected Core.ConnectorApi.Query.Query Query;
         protected System.DateTime? ModifiedAfterDate = null;
         protected System.DateTime? AttendeeModifiedAfterDate = null;
-        public BaseObject(string accountId, string eventId)
+        protected bool HasChildren;
+        protected List<string> ChildNames = new List<string>();
+        public BaseObject(string accountId, string eventId, string name, string fullName, string description)
         {
             this.EventId = eventId;
             this.AccountId = accountId;
+            FullName = fullName;
+            Description = description;
+            Hidden = false;
+            Name = name;
+            SupportedActionFullNames = new List<string> { Constants.Action_Query };
         }
 
         virtual protected void SetPropertyDefinitions(JObject o)
@@ -75,7 +83,14 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     if (System.DateTime.TryParse(lookupCondition.RightValue.Value.ToString(), out d))
                         this.AttendeeModifiedAfterDate = d;
                 }
+                
             }
+
+            if (query != null && query.RootEntity != null && query.RootEntity.ChildList != null && query.RootEntity.ChildList.Count > 0)
+            {
+                this.HasChildren = true;
+                query.RootEntity.ChildList.ForEach(c => this.ChildNames.Add(c.Name));
+            } 
         }
     }
 }

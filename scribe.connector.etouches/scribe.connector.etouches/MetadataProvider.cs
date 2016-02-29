@@ -88,7 +88,7 @@ namespace Scribe.Connector.etouches
                     Name = "Query",
                     KnownActionType = KnownActions.Query,
                     SupportsConstraints = true,
-
+                    SupportsRelations = true,
                 }
             };
         }
