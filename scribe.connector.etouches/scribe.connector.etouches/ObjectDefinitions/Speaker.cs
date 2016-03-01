@@ -9,7 +9,27 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public Speaker(string accountId, string eventId) : base(accountId, eventId,
             Constants.Speaker_Name, Constants.Speaker_FullName, Constants.Speaker_Description)
         {
+            RelationshipDefinitions = getRelationshipDefinitions();
             setPropertyDefinitions();
+        }
+
+        private List<IRelationshipDefinition> getRelationshipDefinitions()
+        {
+            var relationships = new List<IRelationshipDefinition>();
+            relationships.Add(new RelationshipDefinition()
+            {
+                Description = string.Empty,
+                Name = Constants.BuildParentRelationship(this.Name, Constants.Meeting_Name),
+                FullName = this.FullName,
+                RelationshipType = RelationshipType.Parent,
+                ThisObjectDefinitionFullName = this.FullName,
+                ThisProperties = Constants.Meeting_PK,
+                RelatedObjectDefinitionFullName = Constants.Meeting_FullName,
+                RelatedProperties = Constants.Meeting_PK
+            });
+
+            return relationships;
+
         }
 
         private void setPropertyDefinitions()

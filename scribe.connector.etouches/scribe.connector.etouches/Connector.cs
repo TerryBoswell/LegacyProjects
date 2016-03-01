@@ -177,6 +177,9 @@ namespace Scribe.Connector.etouches
                 case "Speaker":
                     var speaker = new ObjectDefinitions.Speaker(Connector.AccountId, Connector.EventId);
                     return speaker.ExecuteQuery(query);
+                case "SessionTrack":
+                    var sessiontrack = new ObjectDefinitions.SessionTrack(Connector.AccountId, Connector.EventId);
+                    return sessiontrack.ExecuteQuery(query);
                 default:
                     throw new NotImplementedException();
             }

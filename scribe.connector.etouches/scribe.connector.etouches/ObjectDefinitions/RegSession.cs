@@ -23,7 +23,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             relationships.Add(new RelationshipDefinition()
             {
                 Description = string.Empty,
-                Name = Constants.BuildParentRelationship(Constants.RegSession_Name, Constants.Attendee_Name),
+                Name = Constants.BuildParentRelationship(this.Name, Constants.Attendee_Name),
                 FullName = this.FullName,
                 RelationshipType = RelationshipType.Parent,
                 ThisObjectDefinitionFullName = this.FullName,

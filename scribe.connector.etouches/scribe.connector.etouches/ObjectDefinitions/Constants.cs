@@ -40,6 +40,10 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string Speaker_FullName = "Speaker";
         public static string Speaker_PK = "speakerid";
 
+        public static string SessionTrack_Name = "SessionTrack";
+        public static string SessionTrack_FullName = "SessionTrack";
+        public static string SessionTrack_Description = "A single Session Track";
+        public static string SessionTrack_PK = "sessiontrackid";
         #endregion
 
 
