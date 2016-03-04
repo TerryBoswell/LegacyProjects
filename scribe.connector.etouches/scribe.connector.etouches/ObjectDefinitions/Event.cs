@@ -5,6 +5,11 @@ using System.Linq;
 
 namespace Scribe.Connector.etouches.ObjectDefinitions
 {
+    /// <summary>
+    /// Event
+    /// Children - Speaker, Session, Meeting
+    /// Parents - None
+    /// </summary>
     class Event : BaseObject
     {
 
@@ -88,7 +93,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Speaker_Name))
                         children.Add(c);
                     de.Children.Add(Constants.Speaker_Name, children);
                 }
@@ -98,7 +103,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Session_Name))
                         children.Add(c);
                     de.Children.Add(Constants.Session_Name, children);
                 }
@@ -108,7 +113,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Meeting_Name))
                         children.Add(c);
                     de.Children.Add(Constants.Meeting_Name, children);
                 }

@@ -19,6 +19,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string RegSession_Name = "RegSession";
         public static string RegSession_FullName = "RegSession";
         public static string RegSession_Description = "RegSession";
+        public static string RegSession_PK = "regsessionid";
 
         public static string Event_Name = "Event";
         public static string Event_FullName = "Event";
@@ -34,6 +35,8 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string Session_Description = "A single Session";
         public static string Session_FullName = "Session";
         public static string Session_PK = "sessionid";
+         //TODO:Check with Shane to determine when Session will have the sessionid property
+        public const string Session_tempPk = "questionid";
 
         public static string Speaker_Name = "Speaker";
         public static string Speaker_Description = "A single Speaker";

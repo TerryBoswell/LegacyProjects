@@ -24,3 +24,32 @@ query.RootEntity.ChildList[0].RelationshipToParent
     Event(Parent) => Meeting fk Event_ID
 
     Make TTL Connector Parameter
+
+speaker_1_speakerid
+
+    Events Children => Speaker, Session, Meeting XXXX
+    Session Children => RegSession, SessionTrack
+
+Things with parents
+  Meeting child of Event Done
+  RegSession child of Session
+  Session child of Event
+  SessionTrack of Session
+  Speaker of Event
+
+  Meeting is done
+  Session is Done
+  Event is Done
+  RegSession
+  Attendee
+  SessionTrack
+  Speaker
+
+    Todo:
+    TTL connector parameter
+    Session Id presence
+    getting parents working
+
+  Questions
+  1) How do we populate the parent entities
+  2) Child values do not work with next

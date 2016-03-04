@@ -6,6 +6,11 @@ using System.Linq;
 
 namespace Scribe.Connector.etouches.ObjectDefinitions
 {
+    /// <summary>
+    /// Attendee
+    /// Parents :
+    /// Children : RegSessions
+    /// </summary>
     class Attendee : BaseObject
     {
 
@@ -67,7 +72,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
                     foreach (
-                        var c in filteredRows.ToDataEntities(Name))
+                        var c in filteredRows.ToDataEntities(Constants.RegSession_Name))
                         children.Add(c);
                     de.Children.Add(Constants.RegSession_Name, children);
                 }

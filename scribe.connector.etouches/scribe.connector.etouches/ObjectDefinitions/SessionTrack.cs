@@ -7,7 +7,13 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 {
     class SessionTrack : BaseObject
     {
-        
+        /// <summary>
+        /// Session Track
+        /// Parents: Session
+        /// Children: 
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="eventId"></param>
         public SessionTrack(string accountId, string eventId): base(accountId, eventId,
             Constants.SessionTrack_Name, Constants.SessionTrack_FullName, Constants.SessionTrack_Description)
         {
@@ -28,7 +34,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 ThisObjectDefinitionFullName = this.FullName,
                 ThisProperties = Constants.Session_PK,
                 RelatedObjectDefinitionFullName = Constants.Session_FullName,
-                RelatedProperties = Constants.Session_PK
+                RelatedProperties = Constants.Session_tempPk
             });
                     
             return relationships;
@@ -49,30 +55,34 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             var table = ds.Tables["ResultSet"];
             var filteredRows = table.Select(query.ToSelectExpression());
             var dataEntities = filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
-            //PopulateChildData(dataEntities);
+            PopulateParentData(dataEntities);
             return dataEntities;
         }
 
-        //internal void PopulateChildData(IEnumerable<DataEntity> dataEntities)
-        //{
-        //    if (!this.HasChildren)
-        //        return;
-        //    foreach (var de in dataEntities)
-        //    {
-        //        de.Children = new Core.ConnectorApi.Query.EntityChildren();
-        //        if (this.ChildNames.Any(x => x.Equals(Constants.RegSession_Name)))
-        //        {
-        //            var ds = DataServicesClient.ListRegSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
-        //            var table = ds.Tables["ResultSet"];
-        //            var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_PK]}");
-        //            List<DataEntity> children = new List<DataEntity>();
-        //            foreach (var c in filteredRows.ToDataEntities(Name))
-        //                children.Add(c);
-        //            de.Children.Add(Constants.Speaker_Name, children);
-        //        }
+        internal void PopulateParentData(IEnumerable<DataEntity> dataEntities)
+        {
+            if (!this.HasChildren)
+                return;
+            foreach (var de in dataEntities)
+            {
+                de.Children = new Core.ConnectorApi.Query.EntityChildren();
+                if (this.ChildNames.Any(x => x.Equals(Constants.Session_Name)))
+                {
+                    var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var table = ds.Tables["ResultSet"];
+
+                    var filteredRows = table.Select($"{Constants.Session_tempPk} = '{de.Properties[Constants.Session_PK]}'");
+                    List<DataEntity> children = new List<DataEntity>();
+                    var parent = filteredRows.FirstDataEntity(Constants.Session_Name);
+                    if (parent != null)
+                    {
+                        children.Add(parent);
+                        de.Children.Add(Constants.Session_Name, children);
+                    }
+                }
                 
-        //    }
-        //}
+            }
+        }
 
     }
 }

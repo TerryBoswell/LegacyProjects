@@ -361,5 +361,22 @@ namespace Scribe.Connector.etouches
             }
             return list;
         }
+
+        public static DataEntity FirstDataEntity(this DataRow[] rows, string entityName)
+        {
+            if (rows.Length == 0)
+                return null;
+
+            var row = rows[0];
+            var entity = new DataEntity(entityName)
+            {
+                Properties = new EntityProperties()
+            };
+            foreach (DataColumn col in row.Table.Columns)
+            {
+                entity.Properties.Add(col.ColumnName, row[col]);
+            }
+            return entity;
+        }
     }
 }
