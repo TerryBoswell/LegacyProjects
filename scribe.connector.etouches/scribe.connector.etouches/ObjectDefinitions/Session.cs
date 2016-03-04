@@ -40,19 +40,19 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             {
                 Description = string.Empty,
                 Name = Constants.BuildChildRelationship(Constants.RegSession_Name, this.Name),
-                FullName = "My" + Constants.RegSession_FullName,
+                FullName = Constants.RegSession_FullName,
                 RelationshipType = RelationshipType.Child,
                 ThisObjectDefinitionFullName = this.FullName,
-                ThisProperties = Constants.Session_tempPk, //Constants.Session_PK,
+                ThisProperties = Constants.Session_PK, //Constants.Session_PK,
                 RelatedObjectDefinitionFullName = Constants.RegSession_FullName,
-                RelatedProperties = Constants.Session_PK
+                RelatedProperties = Constants.Session_tempPk
             });
 
             relationships.Add(new RelationshipDefinition()
             {
                 Description = string.Empty,
                 Name = Constants.BuildChildRelationship(Constants.SessionTrack_Name, this.Name),
-                FullName = "My" + Constants.SessionTrack_FullName,
+                FullName = Constants.SessionTrack_FullName,
                 RelationshipType = RelationshipType.Child,
                 ThisObjectDefinitionFullName = this.FullName,
                 ThisProperties = Constants.Session_tempPk, // Constants.Session_PK,

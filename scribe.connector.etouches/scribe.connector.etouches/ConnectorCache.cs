@@ -54,9 +54,13 @@ namespace Scribe.Connector.etouches
             cacheLock.EnterWriteLock();
             try
             {
+                int ttl;
+                if (!int.TryParse(Connector.TTL, out ttl))
+                    ttl = 20;
                 CacheItemPolicy cip = new CacheItemPolicy()
                 {
-                    AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddMinutes(20))
+                     
+                    AbsoluteExpiration = new DateTimeOffset(DateTime.Now.AddMinutes(ttl))
                 };
                 MemoryCache.Default.Set(cacheKey, data, cip);                
             }

@@ -28,6 +28,7 @@ namespace Scribe.Connector.etouches
 
         public static string EventId = String.Empty;
         public static string AccountId = String.Empty;
+        public static string TTL = "20";
         private string apiKey = String.Empty;
         private string subDomain = string.Empty;
         private string uri = string.Empty;
@@ -48,6 +49,16 @@ namespace Scribe.Connector.etouches
             Int32.TryParse(EventId, out numericResult);
             if (numericResult == 0) throw new ApplicationException("Event Id must be numeric.");
 
+            //retrieve and test the EventId
+            if (properties.ContainsKey("TTL"))
+            {
+                TTL = properties["TTL"];
+                numericResult = 0;
+                Int32.TryParse(TTL, out numericResult);
+                if (numericResult == 0) throw new ApplicationException("TTL must be numeric.");
+            }
+            else
+                TTL = "20";
             //retrieve the ApiKey, scribe's UI ensures its not empty
             this.apiKey = properties["ApiKey"];
 
@@ -226,6 +237,13 @@ namespace Scribe.Connector.etouches
                             IsRequired = true,
                             Label = "API Key",
                             PropertyName = "ApiKey"
+                        },
+                        new EntryDefinition
+                        {
+                            InputType = InputType.Text,
+                            IsRequired = true,
+                            Label = "TTL for Cache In Minutes",
+                            PropertyName = "TTL"
                         },
                         new EntryDefinition
                         {
