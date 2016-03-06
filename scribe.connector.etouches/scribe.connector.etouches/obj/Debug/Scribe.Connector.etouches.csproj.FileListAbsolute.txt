@@ -96,4 +96,3 @@ Z:\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\bin\Debug\Newtonso
 Z:\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\obj\Debug\Scribe.Connector.etouches.dll
 Z:\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\obj\Debug\Scribe.Connector.etouches.pdb
 Z:\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\obj\Debug\Scribe.Connector.etouches.csprojResolveAssemblyReference.cache
-C:\_Git\etouches\scribe.connector.etouches\Scribe.Connector.etouches\obj\Debug\Scribe.Connector.etouches.csprojResolveAssemblyReference.cache

@@ -27,7 +27,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             {
                 Description = string.Empty,
                 Name = Constants.BuildParentRelationship(this.Name, Constants.Event_Name),
-                FullName = this.FullName,
+                FullName = Constants.Event_FullName,
                 RelationshipType = RelationshipType.Parent,
                 ThisObjectDefinitionFullName = this.FullName,
                 ThisProperties = Constants.Event_PK,

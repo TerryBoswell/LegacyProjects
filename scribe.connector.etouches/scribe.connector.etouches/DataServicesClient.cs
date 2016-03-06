@@ -243,8 +243,7 @@ namespace Scribe.Connector.etouches
 
         private static string Generatekey(string action, string accountId, string eventId = null, string aQuery = null)
         {
-            
-            return $"{action}-{accountId}-{eventId}-{aQuery}";
+            return $"{Connector.AccessToken}-{action}-{accountId}-{eventId}-{aQuery}";
         }
         public static HttpClient NewHttpClient(string baseUri = null)
         {

@@ -40,12 +40,12 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             {
                 Description = string.Empty,
                 Name = Constants.BuildChildRelationship(Constants.RegSession_Name, this.Name),
-                FullName = Constants.RegSession_FullName,
+                FullName = Constants.RegSession_Name,
                 RelationshipType = RelationshipType.Child,
                 ThisObjectDefinitionFullName = this.FullName,
                 ThisProperties = Constants.Session_PK, //Constants.Session_PK,
                 RelatedObjectDefinitionFullName = Constants.RegSession_FullName,
-                RelatedProperties = Constants.Session_tempPk
+                RelatedProperties = Constants.Session_PK
             });
 
             relationships.Add(new RelationshipDefinition()
@@ -55,7 +55,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 FullName = Constants.SessionTrack_FullName,
                 RelationshipType = RelationshipType.Child,
                 ThisObjectDefinitionFullName = this.FullName,
-                ThisProperties = Constants.Session_tempPk, // Constants.Session_PK,
+                ThisProperties = Constants.Session_PK, // Constants.Session_PK,
                 RelatedObjectDefinitionFullName = Constants.SessionTrack_FullName,
                 RelatedProperties = Constants.Session_PK
             });
@@ -68,6 +68,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         {
             var data = DataServicesClient.GetSessionMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
             base.SetPropertyDefinitions(data);
+            
         }
 
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
@@ -96,9 +97,9 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 {
                     var ds = DataServicesClient.ListRegSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
                     var table = ds.Tables["ResultSet"];
-                    var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_tempPk]}");
+                    var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.RegSession_Name))
                         children.Add(c);
                     de.Children.Add(Constants.RegSession_Name, children);
                 }
@@ -106,9 +107,9 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 {
                     var ds = DataServicesClient.ListSessionTracks(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
                     var table = ds.Tables["ResultSet"];
-                    var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_tempPk]}");
+                    var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.SessionTrack_Name))
                         children.Add(c);
                     de.Children.Add(Constants.SessionTrack_Name, children);
                 }
