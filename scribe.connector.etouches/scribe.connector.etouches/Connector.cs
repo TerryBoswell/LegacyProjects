@@ -29,6 +29,7 @@ namespace Scribe.Connector.etouches
         public static string EventId = String.Empty;
         public static string AccountId = String.Empty;
         public static string TTL = "20";
+        public static int PageSize = 1024;
         private string apiKey = String.Empty;
         private string subDomain = string.Empty;
         private string uri = string.Empty;
@@ -59,6 +60,16 @@ namespace Scribe.Connector.etouches
             }
             else
                 TTL = "20";
+
+            //retrieve the page size
+            if (properties.ContainsKey("PageSize"))
+            {
+                var pageSize = properties["PageSize"];
+                var intResult = 0;
+                if (Int32.TryParse(pageSize, out intResult))
+                    PageSize = intResult;
+            }
+
             //retrieve the ApiKey, scribe's UI ensures its not empty
             this.apiKey = properties["ApiKey"];
 
@@ -244,6 +255,13 @@ namespace Scribe.Connector.etouches
                             IsRequired = true,
                             Label = "TTL for Cache In Minutes",
                             PropertyName = "TTL"
+                        },
+                        new EntryDefinition
+                        {
+                            InputType = InputType.Text,
+                            IsRequired = true,
+                            Label = "Page Size",
+                            PropertyName = "PageSize"
                         },
                         new EntryDefinition
                         {

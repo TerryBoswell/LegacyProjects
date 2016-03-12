@@ -14,6 +14,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         protected System.DateTime? ModifiedAfterDate = null;
         protected System.DateTime? AttendeeModifiedAfterDate = null;
         protected bool HasChildren;
+        protected Dictionary<string, string> KeyPairs = new Dictionary<string, string>();
         protected List<string> ChildNames = new List<string>();
         public BaseObject(string accountId, string eventId, string name, string fullName, string description)
         {
@@ -66,6 +67,16 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             if (query != null && query.Constraints != null && query.Constraints.ExpressionType == ExpressionType.Comparison)
             {
                 ComparisonExpression lookupCondition = query.Constraints as ComparisonExpression;
+
+                //We need to deal with the equality operator since the api supports exact match on key pair values
+                if (lookupCondition.Operator == ComparisonOperator.Equal 
+                    && lookupCondition.RightValue.Value != null)
+                {
+                    var key = lookupCondition.LeftValue.Value.ToString().Replace($"{this.Name}.", string.Empty);
+                    var value = lookupCondition.RightValue.Value.ToString();
+                    this.KeyPairs.Add(key, value);
+                }
+
                 //We have to make a presumption that we will key off the name last modified from our meta data
                 if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{DataServicesClient.LastModifiedParameter}")
                     && lookupCondition.RightValue.Value != null)
@@ -91,6 +102,15 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 this.HasChildren = true;
                 query.RootEntity.ChildList.ForEach(c => this.ChildNames.Add(c.Name));
             } 
+        }
+
+        virtual protected IEnumerable<DataEntity> GetDataEntites(System.Data.DataSet ds, Core.ConnectorApi.Query.Query query)
+        {
+            var table = ds.Tables["ResultSet"];
+            if (table.Rows.Count == 0)
+                return new List<DataEntity>();
+            var filteredRows = table.Select(query.ToSelectExpression());
+            return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
         }
     }
 }

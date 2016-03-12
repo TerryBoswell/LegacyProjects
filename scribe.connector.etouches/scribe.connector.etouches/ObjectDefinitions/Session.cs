@@ -75,10 +75,8 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         {
             this.SetQuery(query);
 
-            var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
-            var table = ds.Tables["ResultSet"];
-            var filteredRows = table.Select(query.ToSelectExpression());
-            var dataEntities = filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
+            var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.KeyPairs);
+            var dataEntities = GetDataEntites(ds, query);
             PopulateChildData(dataEntities);
             PopulateParentData(dataEntities); 
             return dataEntities;

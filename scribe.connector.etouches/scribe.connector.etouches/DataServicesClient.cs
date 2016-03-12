@@ -97,7 +97,9 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, DateTime? attendeesModifiedAfter = null)
+        public static DataSet ListEvents(string baseUrl, string accesstoken, string accountId, 
+            DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, DateTime? attendeesModifiedAfter = null,
+            Dictionary<string, string> keypairs = null)
         {
             string aQuery = string.Empty;
             if (attendeesModifiedAfter.HasValue)
@@ -106,11 +108,12 @@ namespace Scribe.Connector.etouches
                 aQuery = $"attendees_modified-gt={d}";
             }
             var action = "eventlist.json";
-            var key = Generatekey(action, accountId, null, aQuery);
+            var key = Generatekey(action, accountId, null, aQuery, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, null, modifiedAfter, modifiedBefore, aQuery);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, null, modifiedAfter, modifiedBefore, 
+                aQuery, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -125,14 +128,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null)
+        public static DataSet ListAttendees(string baseUrl, string accesstoken, string accountId, string eventId, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "attendeelist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, modifiedAfter, modifiedBefore);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, modifiedAfter, modifiedBefore, null, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -146,14 +150,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListRegSessions(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListRegSessions(string baseUrl, string accesstoken, string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "regsessionlist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -165,14 +170,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListSpeakers(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListSpeakers(string baseUrl, string accesstoken, string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "speakerlist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -185,14 +191,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListSessions(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListSessions(string baseUrl, string accesstoken, string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "sessionlist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -203,14 +210,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListSessionTracks(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListSessionTracks(string baseUrl, string accesstoken, string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "sessiontracklist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -221,14 +229,15 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListMeetings(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static DataSet ListMeetings(string baseUrl, string accesstoken, string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
         {
             var action = "meetinglist.json";
-            var key = Generatekey(action, accountId, eventId);
+            var key = Generatekey(action, accountId, eventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                 return ds;
-            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId);
+            ds = GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, keypairs);
             if (ds != null)
                 ConnectorCache.StoreData(key, ds);
             return ds;
@@ -241,9 +250,14 @@ namespace Scribe.Connector.etouches
 
         #region Utility Methods
 
-        private static string Generatekey(string action, string accountId, string eventId = null, string aQuery = null)
+        private static string Generatekey(string action, string accountId, string eventId = null, 
+            string aQuery = null, Dictionary<string, string> keypairs = null)
         {
-            return $"{Connector.AccessToken}-{action}-{accountId}-{eventId}-{aQuery}";
+            var key = $"{Connector.AccessToken}-{action}-{accountId}-{eventId}-{aQuery}";
+            if (keypairs != null && keypairs.Any())
+                foreach (var kp in keypairs)
+                    key = $"{key}-{kp.Key}-{kp.Value}";
+            return key;
         }
         public static HttpClient NewHttpClient(string baseUri = null)
         {
@@ -296,6 +310,12 @@ namespace Scribe.Connector.etouches
             return json;
         }
 
+
+        private static DataSet GetDatasetIteratively(string baseUrl, string action, string accesstoken, string accountId = null,
+            string eventId = null, Dictionary<string, string> keypairs = null)
+        {
+            return GetDatasetIteratively(baseUrl, action, accesstoken, accountId, eventId, null, null ,null, keypairs);
+        }
         /// <summary>
         /// This method will load a dataset iteratively. It converts one row and column at a time
         /// it protects against properties that are collections ignoring them
@@ -310,9 +330,11 @@ namespace Scribe.Connector.etouches
         /// <param name="modifiedBefore"></param>
         /// <returns></returns>
         private static DataSet GetDatasetIteratively(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null)
+            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null,
+            Dictionary<string, string> keypairs = null)
         {
-            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken, accountId, eventId, modifiedAfter, modifiedBefore, additionCondition);
+            HttpResponse result = DoHttpGetInternal(baseUrl, action, accesstoken,
+                accountId, eventId, modifiedAfter, modifiedBefore, additionCondition, Connector.PageSize, keypairs);
             if (result == null)
                 throw new ApplicationException("Result of get was null");
             DataSet ds = null;
@@ -374,7 +396,8 @@ namespace Scribe.Connector.etouches
         /// <param name="additionCondition">A custom Query parameter to pass that is not a common one</param>
         /// <returns></returns>
         private static HttpResponse DoHttpGetInternal(string baseUrl, string action, string accesstoken, string accountId = null,
-            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null)
+            string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null,
+            int? pageSize = null, Dictionary<string, string> keypairs = null)
         {
             var http = NewHttpClient();
             //var uri = new UriBuilder(baseUrl);
@@ -406,6 +429,14 @@ namespace Scribe.Connector.etouches
 
             if (!String.IsNullOrEmpty(additionCondition))
                 path = $"{path}&{additionCondition}";
+
+            if (pageSize.HasValue)
+                path = $"{path}&pageSize={pageSize.Value}";
+
+            if (keypairs != null && keypairs.Any())
+                foreach (var kp in keypairs)
+                    path += $"&{kp.Key}={kp.Value}";
+            
             return http.Get(path);
         }
 

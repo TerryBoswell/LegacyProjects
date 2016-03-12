@@ -38,17 +38,16 @@ Things with parents
   Speaker of Event
 
   Meeting is done
-  Session is Done
+  Session debug children
   Event is Done
-  RegSession
-  Attendee
-  SessionTrack
-  Speaker
+  RegSession is Done
+  Attendee - is Done
+  SessionTrack - is Done
+  Speaker - is Done
 
     Todo:
     TTL connector parameter
-    Session Id presence
-    getting parents working
+
 
   Questions
   1) How do we populate the parent entities
