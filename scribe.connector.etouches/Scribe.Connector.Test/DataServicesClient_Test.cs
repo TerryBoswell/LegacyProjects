@@ -134,6 +134,25 @@ namespace Scribe.Connector.Test
         }
 
         [TestMethod]
+        public void TestListEvents_TestPaging()
+        {
+            VerifyAccessToken();
+            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            Assert.IsNotNull(data);
+            var firstCount = data.Tables[0].Rows.Count;
+            etouches.Connector.PageSize = 1;
+            //we'll exist in this case because it is no longer a valid test
+            if (firstCount == 1)
+                return;
+            etouches.ConnectorCache.Clear();
+            data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            Assert.IsNotNull(data);
+            var secondCount = data.Tables[0].Rows.Count;
+            Assert.AreNotEqual(firstCount, secondCount);
+        }
+
+
+        [TestMethod]
         public void TestListEventsWithKeyPairs()
         {
             VerifyAccessToken();

@@ -69,6 +69,20 @@ namespace Scribe.Connector.etouches
                 cacheLock.ExitWriteLock();
             }
         }
+
+        public static void Clear()
+        {
+            cacheLock.EnterWriteLock();
+            try
+            {
+                MemoryCache.Default.Dispose();
+                GC.Collect();
+            }
+            finally
+            {
+                cacheLock.ExitWriteLock();
+            }
+        }
     }
 
     
