@@ -371,6 +371,12 @@ namespace Scribe.Connector.etouches
                             column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
                         if (column.Value.ToString().Equals("0000-00-00", StringComparison.OrdinalIgnoreCase))
                             column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                        if (column.Value.ToString().Equals("0001-01-01 00:00:00", StringComparison.OrdinalIgnoreCase))
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                        if (column.Value.ToString().Equals("0001 - 01 - 01", StringComparison.OrdinalIgnoreCase))
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                        if (column.Value.ToString().Equals("0001-01-01", StringComparison.OrdinalIgnoreCase))
+                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
                         cleanRow.Add(column.Name, column.Value);
                     }
                 }
