@@ -366,17 +366,17 @@ namespace Scribe.Connector.etouches
                     {
                         //We need to clean up columns of type date that are represented this way for nulls
                         if (column.Value.ToString().Equals("0000-00-00 00:00:00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         if (column.Value.ToString().Equals("0000 - 00 - 00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         if (column.Value.ToString().Equals("0000-00-00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         if (column.Value.ToString().Equals("0001-01-01 00:00:00", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         if (column.Value.ToString().Equals("0001 - 01 - 01", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         if (column.Value.ToString().Equals("0001-01-01", StringComparison.OrdinalIgnoreCase))
-                            column.Value = System.DateTime.MinValue.ToString("yyyy-MM-dd");
+                            column.Value = getDefaultDate();
                         cleanRow.Add(column.Name, column.Value);
                     }
                 }
@@ -389,6 +389,11 @@ namespace Scribe.Connector.etouches
             return ds;
         }
 
+        private static String getDefaultDate()
+        {
+            return String.Empty;
+            //return System.DateTime.MinValue.ToString("yyyy-MM-dd");
+        }
         /// <summary>
         /// 
         /// </summary>
