@@ -15,6 +15,12 @@ namespace Scribe.Connector.Test
         private const string TTL = "20";
         private const string PageSize = "1024";
         private string AccessToken = string.Empty;
+        Scribe.Connector.etouches.Connector Connector;
+        public DataServicesClient_Test()
+        {
+            Connector = createConnector();
+        }
+
         private etouches.Connector createConnector()
         {
             Dictionary<string, string> properties = new Dictionary<string, string>();
@@ -27,7 +33,6 @@ namespace Scribe.Connector.Test
             properties.Add("PageSize", PageSize);
 
             var connector = new Scribe.Connector.etouches.Connector();
-
             connector.Connect(properties);
             return connector;
         }
@@ -102,7 +107,7 @@ namespace Scribe.Connector.Test
         public void TestListAttendees()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListAttendees(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListAttendees(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -110,10 +115,10 @@ namespace Scribe.Connector.Test
         public void TestListAttendeesWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListAttendees(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListAttendees(Connector.Connection);
             var key = "category_reference";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListAttendees(BaseUrl, AccessToken, AccountId, EventId, null, null, keyPairs);
+            data = etouches.DataServicesClient.ListAttendees(Connector.Connection, null, null, keyPairs);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -129,7 +134,7 @@ namespace Scribe.Connector.Test
         public void TestListEvents()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -137,15 +142,15 @@ namespace Scribe.Connector.Test
         public void TestListEvents_TestPaging()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
             Assert.IsNotNull(data);
             var firstCount = data.Tables[0].Rows.Count;
-            etouches.Connector.PageSize = 1;
+            Connector.SetPageSize(1);
             //we'll exist in this case because it is no longer a valid test
             if (firstCount == 1)
                 return;
             etouches.ConnectorCache.Clear();
-            data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            data = etouches.DataServicesClient.ListEvents(Connector.Connection);
             Assert.IsNotNull(data);
             var secondCount = data.Tables[0].Rows.Count;
             Assert.AreNotEqual(firstCount, secondCount);
@@ -156,10 +161,10 @@ namespace Scribe.Connector.Test
         public void TestListEventsWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId);
+            var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
             var key = "enddate";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId, null, null, null, keyPairs);
+            data = etouches.DataServicesClient.ListEvents(Connector.Connection, null, null, null, keyPairs);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -176,7 +181,7 @@ namespace Scribe.Connector.Test
         public void TestListEventsWithLessThanDate()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId, null, DateTime.Now.AddDays(-30));
+            var data = etouches.DataServicesClient.ListEvents(Connector.Connection, null, DateTime.Now.AddDays(-30));
             Assert.IsNotNull(data);
         }
 
@@ -184,7 +189,7 @@ namespace Scribe.Connector.Test
         public void TestListEventsWithAttendeeDate()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(BaseUrl, AccessToken, AccountId, null, null, DateTime.Now.AddDays(-30));
+            var data = etouches.DataServicesClient.ListEvents(Connector.Connection, null, null, DateTime.Now.AddDays(-30));
             Assert.IsNotNull(data);
         }
 
@@ -192,7 +197,7 @@ namespace Scribe.Connector.Test
         public void TestListRegSessions()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListRegSessions(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListRegSessions(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -200,11 +205,11 @@ namespace Scribe.Connector.Test
         public void TestListRegSessionsWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListRegSessions(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListRegSessions(Connector.Connection);
             Assert.IsNotNull(data);
             var key = "fname";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListRegSessions(BaseUrl, AccessToken, AccountId, EventId, keyPairs);
+            data = etouches.DataServicesClient.ListRegSessions(Connector.Connection, keyPairs);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -220,7 +225,7 @@ namespace Scribe.Connector.Test
         public void TestListSpeakers()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSpeakers(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSpeakers(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -228,11 +233,11 @@ namespace Scribe.Connector.Test
         public void TestListSpeakersWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSpeakers(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSpeakers(Connector.Connection);
             Assert.IsNotNull(data);
             var key = "speaker_fname";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListSpeakers(BaseUrl, AccessToken, AccountId, EventId, keyPairs);
+            data = etouches.DataServicesClient.ListSpeakers(Connector.Connection, keyPairs);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -248,7 +253,7 @@ namespace Scribe.Connector.Test
         public void TestListSessions()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSessions(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSessions(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -256,11 +261,11 @@ namespace Scribe.Connector.Test
         public void TestListSessionsWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSessions(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSessions(Connector.Connection);
             Assert.IsNotNull(data);
             var key = "sessiondate";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data =  etouches.DataServicesClient.ListSessions(BaseUrl, AccessToken, AccountId, EventId, keyPairs);            
+            data =  etouches.DataServicesClient.ListSessions(Connector.Connection, keyPairs);            
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -276,7 +281,7 @@ namespace Scribe.Connector.Test
         public void TestListSessionTracks()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSessionTracks(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSessionTracks(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -284,11 +289,11 @@ namespace Scribe.Connector.Test
         public void TestListSessionTracksWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListSessionTracks(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListSessionTracks(Connector.Connection);
             Assert.IsNotNull(data);
             var key = "eventid";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListSessionTracks(BaseUrl, AccessToken, AccountId, EventId, keyPairs);
+            data = etouches.DataServicesClient.ListSessionTracks(Connector.Connection);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -305,7 +310,7 @@ namespace Scribe.Connector.Test
         public void TestListMeetings()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListMeetings(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListMeetings(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -313,11 +318,11 @@ namespace Scribe.Connector.Test
         public void TestListMeetingsWithKeyPairs()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListMeetings(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.ListMeetings(Connector.Connection);
             Assert.IsNotNull(data);
             var key = "eventid";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
-            data = etouches.DataServicesClient.ListMeetings(BaseUrl, AccessToken, AccountId, EventId, keyPairs);
+            data = etouches.DataServicesClient.ListMeetings(Connector.Connection);
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();

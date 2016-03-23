@@ -14,7 +14,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="eventId"></param>
-        public Speaker(string accountId, string eventId) : base(accountId, eventId,
+        public Speaker(ScribeConnection connection) : base(connection,
             Constants.Speaker_Name, Constants.Speaker_FullName, Constants.Speaker_Description)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
@@ -54,7 +54,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetRegSessionMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+            var data = DataServicesClient.GetRegSessionMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
             base.SetPropertyDefinitions(data);
         }
 
@@ -62,7 +62,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListSpeakers(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.KeyPairs);
+            var ds = DataServicesClient.ListSpeakers(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;
@@ -78,7 +78,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 //Event, session
                 if (this.ChildNames.Any(x => x.Equals(Constants.Event_Name)))
                 {
-                    var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, this.AccountId);
+                    var ds = DataServicesClient.ListEvents(Connection);
                     var table = ds.Tables["ResultSet"];
 
                     var filteredRows = table.Select($"{Constants.Event_PK} = '{de.Properties[Constants.Event_PK]}'");
@@ -93,7 +93,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
                 if (this.ChildNames.Any(x => x.Equals(Constants.Session_Name)))
                 {
-                    var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListSessions(Connection);
                     var table = ds.Tables["ResultSet"];
 
                     var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_tempPk]}");

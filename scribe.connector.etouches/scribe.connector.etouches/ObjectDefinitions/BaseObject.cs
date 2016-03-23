@@ -8,18 +8,16 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 {
     abstract class BaseObject : ObjectDefinition
     {
-        protected string EventId;
-        protected string AccountId;
+        protected ScribeConnection Connection;
         protected Core.ConnectorApi.Query.Query Query;
         protected System.DateTime? ModifiedAfterDate = null;
         protected System.DateTime? AttendeeModifiedAfterDate = null;
         protected bool HasChildren;
         protected Dictionary<string, string> KeyPairs = new Dictionary<string, string>();
         protected List<string> ChildNames = new List<string>();
-        public BaseObject(string accountId, string eventId, string name, string fullName, string description)
+        public BaseObject(ScribeConnection connection, string name, string fullName, string description)
         {
-            this.EventId = eventId;
-            this.AccountId = accountId;
+            this.Connection = connection;
             FullName = fullName;
             Description = description;
             Hidden = false;

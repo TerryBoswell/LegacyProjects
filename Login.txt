@@ -22,11 +22,9 @@ CtKwe4x0ujEyPor6pcqJzsL9fvHPeFYWte7tHIWIYtcie
 EventMetaData
  http://ec2-54-175-237-66.compute-1.amazonaws.com/eventmetadata/3037?accesstoken=CtKwe4x0ujEyPor6pcqJzsL9fvHPeFYWte7tHIWIYtcie
 
-Week of 2/1 - 3hrs
-Week of 2/8 - 4hrs
-week of 2/15 - 3hrs
-week of 2/22 - 3Hrs
-
+Phase 2
+Week ending 3/13(sunday) 9hrs
+Week ending 3/20 2hrs
 
  https://datasvc.etouches.com/sessionmetadata/3037/86972?accesstoken=j0gomFFX1TGSGCET0UBdsE0375iiIFByr5wH28XipBjQcie
 

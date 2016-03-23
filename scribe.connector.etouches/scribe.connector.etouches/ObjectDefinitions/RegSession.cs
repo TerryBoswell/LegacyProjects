@@ -14,7 +14,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     class RegSession : BaseObject
     {
 
-        public RegSession(string accountId, string eventId) : base(accountId, eventId,
+        public RegSession(ScribeConnection connection) : base(connection,
             Constants.RegSession_Name, Constants.RegSession_FullName, Constants.RegSession_Description)
         {
 
@@ -55,7 +55,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetRegSessionMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+            var data = DataServicesClient.GetRegSessionMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
             base.SetPropertyDefinitions(data);
         }
 
@@ -63,7 +63,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListRegSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.KeyPairs);
+            var ds = DataServicesClient.ListRegSessions(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;
@@ -78,7 +78,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 de.Children = new Core.ConnectorApi.Query.EntityChildren();
                 if (this.ChildNames.Any(x => x.Equals(Constants.Session_Name)))
                 {
-                    var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListSessions(Connection);
                     var table = ds.Tables["ResultSet"];
 
                     var filteredRows = table.Select($"{Constants.Session_tempPk} = '{de.Properties[Constants.Session_PK]}'");
@@ -93,7 +93,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
                 if (this.ChildNames.Any(x => x.Equals(Constants.Attendee_Name)))
                 {
-                    var ds = DataServicesClient.ListAttendees(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListAttendees(Connection);
                     var table = ds.Tables["ResultSet"];
 
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = '{de.Properties[Constants.Attendee_PK]}'");

@@ -13,7 +13,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     class Meeting : BaseObject
     {
 
-        public Meeting(string accountId, string eventId) : base(accountId, eventId,
+        public Meeting(ScribeConnection connection) : base(connection,
             Constants.Meeting_Name, Constants.Meeting_FullName, Constants.Meeting_Description)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
@@ -41,7 +41,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetMeetingMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+            var data = DataServicesClient.GetMeetingMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
             base.SetPropertyDefinitions(data);
         }
 
@@ -49,7 +49,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListMeetings(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.KeyPairs);
+            var ds = DataServicesClient.ListMeetings(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;
@@ -64,7 +64,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 de.Children = new Core.ConnectorApi.Query.EntityChildren();
                 if (this.ChildNames.Any(x => x.Equals(Constants.RegSession_Name)))
                 {
-                    var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, this.AccountId);
+                    var ds = DataServicesClient.ListEvents(Connection);
                     var table = ds.Tables["ResultSet"];
                   
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");

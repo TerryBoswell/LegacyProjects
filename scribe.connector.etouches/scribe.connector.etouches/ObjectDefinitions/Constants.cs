@@ -49,6 +49,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string SessionTrack_PK = "sessiontrackid";
         #endregion
 
+        public static string ConnectorTitle = "Scribe Connector";
 
         public static string BuildChildRelationship(string parent, string child)
         {

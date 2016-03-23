@@ -13,7 +13,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     class Event : BaseObject
     {
 
-        public Event(string accountId, string eventId) : base(accountId, eventId,
+        public Event(ScribeConnection connection) : base(connection,
             Constants.Event_Name, Constants.Event_FullName, Constants.Event_Description)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
@@ -63,7 +63,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetEventMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId);
+            var data = DataServicesClient.GetEventMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId);
             base.SetPropertyDefinitions(data);
         }
 
@@ -71,8 +71,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListEvents(Connector.BaseUrl, Connector.AccessToken, 
-                this.AccountId, this.ModifiedAfterDate, this.AttendeeModifiedAfterDate, null, this.KeyPairs);
+            var ds = DataServicesClient.ListEvents(Connection, this.ModifiedAfterDate, this.AttendeeModifiedAfterDate, null, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateChildData(dataEntities);
             return dataEntities;
@@ -90,7 +89,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 //Events Children => Speaker, Session, Meeting
                 if (this.ChildNames.Any(x => x.Equals(Constants.Speaker_Name)))
                 {
-                    var ds = DataServicesClient.ListSpeakers(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListSpeakers(Connection);
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
@@ -100,7 +99,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
                 if (this.ChildNames.Any(x => x.Equals(Constants.Session_Name)))
                 {
-                    var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListSessions(Connection);
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
@@ -110,7 +109,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
                 if (this.ChildNames.Any(x => x.Equals(Constants.Meeting_Name)))
                 {
-                    var ds = DataServicesClient.ListMeetings(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListMeetings(Connection);
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();

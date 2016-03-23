@@ -24,139 +24,19 @@ namespace Scribe.Connector.etouches
     public class Connector : IConnector
     {
 
-        public const string API_URI_PATTERN = @"https://{0}.eiseverywhere.com";
-
-        public static string EventId = String.Empty;
-        public static string AccountId = String.Empty;
-        public static string TTL = "20";
-        public static int PageSize = 1024;
-        private string apiKey = String.Empty;
-        private string subDomain = string.Empty;
-        private string uri = string.Empty;
-        public static string BaseUrl = "https://eiseverywhere.com";
-        public static string AccessToken = string.Empty;
+        public ScribeConnection Connection;
 
         public void Connect(IDictionary<string, string> properties)
         {
-            //retrieve and test the AccountId
-            AccountId = properties["AccountId"];
-            Int32 numericResult = 0;
-            Int32.TryParse(AccountId, out numericResult);
-            if (numericResult == 0) throw new ApplicationException("Account Id must be numeric.");
-
-            //retrieve and test the EventId
-            EventId = properties["EventId"];
-            numericResult = 0;
-            Int32.TryParse(EventId, out numericResult);
-            if (numericResult == 0) throw new ApplicationException("Event Id must be numeric.");
-
-            //retrieve and test the EventId
-            if (properties.ContainsKey("TTL"))
-            {
-                TTL = properties["TTL"];
-                numericResult = 0;
-                Int32.TryParse(TTL, out numericResult);
-                if (numericResult == 0) throw new ApplicationException("TTL must be numeric.");
-            }
-            else
-                TTL = "20";
-
-            //retrieve the page size
-            if (properties.ContainsKey("PageSize"))
-            {
-                var pageSize = properties["PageSize"];
-                var intResult = 0;
-                if (Int32.TryParse(pageSize, out intResult))
-                    PageSize = intResult;
-            }
-
-            //retrieve the ApiKey, scribe's UI ensures its not empty
-            this.apiKey = properties["ApiKey"];
-
-            //retrieve the SubDomain, this can be empty
-            this.subDomain = properties["SubDomain"];
-            if (string.IsNullOrEmpty(subDomain)) subDomain = "www";
-            //remove any trailing "."
-            if (subDomain.EndsWith(".")) subDomain = subDomain.Remove(subDomain.Length - 1);
-
-
-            if (!String.IsNullOrEmpty(properties["BaseUrl"]))
-            {
-                BaseUrl = properties["BaseUrl"];
-            }
-            else
-            {
-                //use the default eiseverywhere.com
-                var uri = new UriBuilder(BaseUrl);
-                BaseUrl = uri.ToString();
-                //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
-                BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
-            }
-
+            this.Connection = new ScribeConnection(properties);
             //attempt connection & set connection status
-            this.IsConnected = TryConnect();
+            this.IsConnected = this.Connection.TryConnect();
         }
 
-        private bool TryConnect()
+        public void SetPageSize(int pageSize)
         {
-            AccessToken = DataServicesClient.Authorize(BaseUrl, AccountId, this.apiKey);
-            return true;
+            Connection.PageSize = pageSize;
         }
-
-        //private bool TryConnect2()
-        //{
-
-        //    var http = new EzHttp.HttpClient(this.baseUrl);
-        //    http.LoggingEnabled = true;
-        //    http.StreamResponse = false;
-        //    var uri = new UriBuilder(this.baseUrl);
-        //    var result = http.Get("/api/v2/datasvc/authorize.json", new { accountid = this.accountId, key = this.apiKey });
-
-        //    var resp = result.DynamicBody;
-        //    Debug.Write(resp.response.etouches.accesstoken);
-        //    return false;
-            
-        //    //var resp = XDocument.Load(result.ResponseStream);
-        //    //var el = resp.XPathSelectElements("/response/etouches/accesstoken").FirstOrDefault();
-        //    //if (el != null)
-        //    //{
-        //    //    this.accessToken = el.Value;
-        //    //    return true;
-        //    //} 
-        //    //else
-        //    //{
-        //    //    throw new ApplicationException("Authentication Failed.\n\n" + resp.Document.ToString());
-        //    //}
-        //}
-
-
-        //private bool TryConnect()
-        //{
-        //    using (var client = new HttpClient())
-        //    {
-        //        client.BaseAddress = new Uri(this.baseUrl);
-        //        client.DefaultRequestHeaders.Accept.Clear();
-        //        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-        //        //SERVER/api/v2/datasvc/authorize.xml?accountid=1&key=2
-        //        var uri = new UriBuilder(this.baseUrl);
-        //        var qs = HttpUtility.ParseQueryString(string.Empty);
-        //        qs["acountid"] = this.accountId;
-        //        qs["key"] = this.apiKey;
-        //        uri.Query = qs.ToString();
-        //        uri.Path = "/api/v2/datasvc/authorize.xml";
-
-        //        HttpResponseMessage response = client.GetAsync(uri.ToString()).Result; //await client.GetAsync(uri.ToString());
-        //        if (response.IsSuccessStatusCode)
-        //        {
-        //            return true;
-        //            Product product = await response.
-        //            Console.WriteLine("{0}\t${1}\t{2}", product.Name, product.Price, product.Category);
-        //        }
-        //    }
-        //    return false;
-        //}
-
         public Guid ConnectorTypeId
         {
             get { return new Guid(ConnectorSettings.ConnectorTypeId); }
@@ -182,25 +62,25 @@ namespace Scribe.Connector.etouches
             switch(query.RootEntity.ObjectDefinitionFullName)
             {
                 case "Event":
-                    var evnt = new ObjectDefinitions.Event(Connector.AccountId, Connector.EventId);
+                    var evnt = new ObjectDefinitions.Event(this.Connection);
                     return evnt.ExecuteQuery(query);
                 case "Attendee":
-                    var attendee = new ObjectDefinitions.Attendee(Connector.AccountId, Connector.EventId);
+                    var attendee = new ObjectDefinitions.Attendee(this.Connection);
                     return attendee.ExecuteQuery(query);
                 case "RegSession":
-                    var regSession = new ObjectDefinitions.RegSession(Connector.AccountId, Connector.EventId);
+                    var regSession = new ObjectDefinitions.RegSession(this.Connection);
                     return regSession.ExecuteQuery(query);
                 case "Session":
-                    var session = new ObjectDefinitions.Session(Connector.AccountId, Connector.EventId);
+                    var session = new ObjectDefinitions.Session(this.Connection);
                     return session.ExecuteQuery(query);
                 case "Meeting":
-                    var meeting = new ObjectDefinitions.Meeting(Connector.AccountId, Connector.EventId);
+                    var meeting = new ObjectDefinitions.Meeting(this.Connection);
                     return meeting.ExecuteQuery(query);
                 case "Speaker":
-                    var speaker = new ObjectDefinitions.Speaker(Connector.AccountId, Connector.EventId);
+                    var speaker = new ObjectDefinitions.Speaker(this.Connection);
                     return speaker.ExecuteQuery(query);
                 case "SessionTrack":
-                    var sessiontrack = new ObjectDefinitions.SessionTrack(Connector.AccountId, Connector.EventId);
+                    var sessiontrack = new ObjectDefinitions.SessionTrack(this.Connection);
                     return sessiontrack.ExecuteQuery(query);
                 default:
                     throw new NotImplementedException();
@@ -213,7 +93,7 @@ namespace Scribe.Connector.etouches
 
         public IMetadataProvider GetMetadataProvider()
         {
-            this.metadataProvider = new MetadataProvider(AccountId, EventId);
+            this.metadataProvider = new MetadataProvider(this.Connection);
             return this.metadataProvider;            
         }
 
