@@ -51,6 +51,10 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         public static string ConnectorTitle = "Scribe Connector";
 
+        public static string LastModifiedParameter = "lastmodified";
+
+        public static string AttendeeLastModifiedParameter = "attendees_lastmodified";
+
         public static string BuildChildRelationship(string parent, string child)
         {
             return $"{child}_{parent}";

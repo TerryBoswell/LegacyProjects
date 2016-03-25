@@ -60,12 +60,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions.cs" />
     <Compile Include="ConnectorCache.cs" />
     <Compile Include="DataServicesClient.cs" />
     <Compile Include="ApiV2Client.cs" />
     <Compile Include="Connector.cs" />
     <Compile Include="ConnectorSettings.cs" />
     <Compile Include="DataTableQueryBuilder.cs" />
+    <Compile Include="DataUtility.cs" />
     <Compile Include="MetadataProvider.cs" />
     <Compile Include="ObjectDefinitions\Constants.cs" />
     <Compile Include="ObjectDefinitions\Meeting.cs" />
@@ -86,6 +88,7 @@
     <Compile Include="ObjectDefinitions\Event.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScribeConnection.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="StandardConnectorSettings.cs" />
   </ItemGroup>
   <ItemGroup>

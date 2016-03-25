@@ -25,6 +25,7 @@ namespace Scribe.Connector.etouches
         
         public ScribeConnection(IDictionary<string, string> properties)
         {
+            connectionKey = Guid.NewGuid();
             AccountId = properties["AccountId"];
             Int32 numericResult = 0;
             Int32.TryParse(AccountId, out numericResult);
@@ -81,6 +82,7 @@ namespace Scribe.Connector.etouches
                 //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
                 BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
             }
+            history = new List<ConnectionHistory>();
         }
 
         private List<ConnectionHistory> history;
@@ -89,20 +91,30 @@ namespace Scribe.Connector.etouches
             get { return history; }
         }
 
+        private readonly Guid connectionKey;
+        /// <summary>
+        /// This represents a unique way of identifying each connection
+        /// We cannot use access token because that may change if we reauthenticate
+        /// </summary>
+        public Guid ConnectionKey
+        {
+            get { return connectionKey; }
+        }
+
         public bool TryConnect()
         {
             AccessToken = DataServicesClient.Authorize(BaseUrl, AccountId, this.apiKey);
             history.Add(new ConnectionHistory(AccessToken) { });
             if (String.IsNullOrEmpty(AccessToken))
-                Logger.Write(Logger.Severity.Error, ObjectDefinitions.Constants.ConnectorTitle, "Connection Failed");
+                Logger.WriteError("Connection Failed");
             else
-                Logger.Write(Logger.Severity.Info, ObjectDefinitions.Constants.ConnectorTitle, "Connection Established");
+                Logger.WriteInfo("Connection Established");
             return true;
         }
 
         public void ReConnnect()
         {
-            Logger.Write(Logger.Severity.Info, "ScribeConnection", "Reconnecting Session");
+            Logger.WriteInfo("Reconnecting Session");
             IsConnected = TryConnect();
         }
     }
