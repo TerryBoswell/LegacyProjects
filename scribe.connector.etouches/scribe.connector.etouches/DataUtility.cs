@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Collections.Concurrent;
+using System.Text;
 
 namespace Scribe.Connector.etouches
 {
@@ -56,6 +57,14 @@ namespace Scribe.Connector.etouches
             if (ds != null)
                    return ds;
 
+
+            if (isKeyPairs)
+            {
+                ds = GetKeyPairValueFromMemory(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, keypairs);
+                if (ds != null)
+                    return ds;
+            }
+
             //If we do not have key pairs, will load all pages for the dataset
             ds = GetCompleteDatasetIteratively(connection, strAction, connection.AccountId, eventId, modifiedAfter, modifiedBefore, additionCondition, keypairs);
 
@@ -84,20 +93,52 @@ namespace Scribe.Connector.etouches
             });
         }
 
-        //private static DataSet GetKeyPairValueFromMemory(Guid connectionKey, string action,
-        //    string accountId, string eventId,
-        //    Dictionary<string, string> keypairs = null)
-        //{
-        //    var dsKey = $"{connectionKey}-{action}";
-        //    ConcurrentBag<string> bag;
-        //    if (DatasetKeys.TryGetValue(dsKey, out bag))
-        //    {
-        //        foreach (var key in bag.AsEnumerable())
-        //        {
-        //            var ds = ConnectorCache.GetCachedData<DataSet>(key);
-        //        }
-        //    }
-        //}
+        private static DataSet GetKeyPairValueFromMemory(Guid connectionKey, string action,
+            string accountId, string eventId,
+            Dictionary<string, string> keypairs = null)
+        {
+            DataSet returnData = null;
+            var dsKey = $"{connectionKey}-{action}";
+            ConcurrentBag<string> bag;
+            //We need to build our query
+            StringBuilder sb = new StringBuilder();
+            foreach (var keypair in keypairs)
+            {
+                if (sb.Length > 0)
+                    sb.Append(" AND ");
+                sb.Append($"{keypair.Key}='{keypair.Value}'");
+            }
+
+            if (DatasetKeys.TryGetValue(dsKey, out bag))
+            {
+                foreach (var key in bag.AsEnumerable())
+                {
+                    var ds = ConnectorCache.GetCachedData<DataSet>(key);
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        var table = ds.Tables["ResultSet"];
+                        var filteredRows = table.Select(sb.ToString());
+                        if (filteredRows != null && filteredRows.Any())
+                        {
+                            if (returnData == null)
+                            {
+                                //Quick and dirty way to add the table if it doesn't exist
+                                returnData = new DataSet();
+                                returnData.copyDataTable(ds);
+                                returnData.Tables[0].Rows.Clear();
+                            }
+                            foreach (var r in filteredRows)
+                            {
+                                returnData.Tables[0].CopyRow(ds.Tables[0], r);
+                            }
+                        }
+                            
+                    }
+                }
+            }
+
+            return returnData;
+        }
 
 
         private static DataSet GetCompleteDatasetIteratively(ScribeConnection connection, string action, string accountId = null,
@@ -124,10 +165,12 @@ namespace Scribe.Connector.etouches
             return returnSet;
         }
 
+        
 
         private static void copyDataTable(this DataSet copyToDs, DataSet copyFromDs)
         {
-
+            if (copyToDs == null)
+                copyToDs = new DataSet();
             if (copyToDs.Tables.Count == 0)
             {
                 copyToDs.Merge(copyFromDs);
@@ -140,20 +183,25 @@ namespace Scribe.Connector.etouches
             for(int j = 0; j < copyFrom.Rows.Count; j++)
             {
                 var row = copyFrom.Rows[j];
-                var newRow = copyTo.NewRow();
-                newRow.BeginEdit();
-                for (int i = 0; i < copyTo.Columns.Count; i++)
-                {
-                    var origColumn = copyTo.Columns[i];
-                    var newColumn = copyFrom.Columns[i];
-                    if (row[i] != DBNull.Value)
-                        newRow[i] = Convert.ChangeType(row[i], origColumn.DataType);
-
-
-                }
-                newRow.EndEdit();
-                copyTo.Rows.Add(newRow);
+                copyTo.CopyRow(copyFrom, row);
             }
+        }
+
+        private static void CopyRow(this DataTable copyTo, DataTable copyFrom, DataRow row)
+        {
+            var newRow = copyTo.NewRow();
+            newRow.BeginEdit();
+            for (int i = 0; i < copyTo.Columns.Count; i++)
+            {
+                var origColumn = copyTo.Columns[i];
+                var newColumn = copyFrom.Columns[i];
+                if (row[i] != DBNull.Value)
+                    newRow[i] = Convert.ChangeType(row[i], origColumn.DataType);
+
+
+            }
+            newRow.EndEdit();
+            copyTo.Rows.Add(newRow);
         }
 
         //private static DataSet GetDatasetIteratively(ScribeConnection connection, string action, string accountId = null,

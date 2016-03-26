@@ -138,23 +138,24 @@ namespace Scribe.Connector.Test
             Assert.IsNotNull(data);
         }
 
-        [TestMethod]
-        public void TestListEvents_TestPaging()
-        {
-            VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
-            Assert.IsNotNull(data);
-            var firstCount = data.Tables[0].Rows.Count;
-            Connector.SetPageSize(1);
-            //we'll exist in this case because it is no longer a valid test
-            if (firstCount == 1)
-                return;
-            etouches.ConnectorCache.Clear();
-            data = etouches.DataServicesClient.ListEvents(Connector.Connection);
-            Assert.IsNotNull(data);
-            var secondCount = data.Tables[0].Rows.Count;
-            Assert.AreNotEqual(firstCount, secondCount);
-        }
+        //[Ignore]
+        //[TestMethod]
+        //public void TestListEvents_TestPaging()
+        //{
+        //    VerifyAccessToken();
+        //    var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
+        //    Assert.IsNotNull(data);
+        //    var firstCount = data.Tables[0].Rows.Count;
+        //    Connector.SetPageSize(1);
+        //    //we'll exist in this case because it is no longer a valid test
+        //    if (firstCount == 1)
+        //        return;
+        //    etouches.ConnectorCache.Clear();
+        //    data = etouches.DataServicesClient.ListEvents(Connector.Connection);
+        //    Assert.IsNotNull(data);
+        //    var secondCount = data.Tables[0].Rows.Count;
+        //    Assert.AreNotEqual(firstCount, secondCount);
+        //}
 
 
         [TestMethod]
