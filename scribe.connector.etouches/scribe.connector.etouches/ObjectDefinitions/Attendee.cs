@@ -42,7 +42,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetAttendeeMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
+            var data = DataServicesClient.GetAttendeeMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 

@@ -43,7 +43,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetSessionTrackMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
+            var data = DataServicesClient.GetSessionTrackMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 

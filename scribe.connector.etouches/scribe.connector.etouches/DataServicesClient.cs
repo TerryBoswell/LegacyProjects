@@ -40,49 +40,49 @@ namespace Scribe.Connector.etouches
 
         #region Meta Data
         ///eventmetadata/
-        public static JObject GetEventMetaData(string baseUrl, string accesstoken, string accountId)
+        public static JObject GetEventMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.EventMeta, accesstoken, accountId);            
+            return DataUtility.GetJObject(connection, Extensions.Actions.EventMeta, connection.AccountId);            
         }
 
         ///sessionmetadata/
-        public static JObject GetSessionMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetSessionMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.SessionMeta, accesstoken, accountId, eventId);            
+            return DataUtility.GetJObject(connection, Extensions.Actions.SessionMeta, connection.AccountId, connection.EventId);            
         }
 
         ///attendeemetadata/
-        public static JObject GetAttendeeMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetAttendeeMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.AttendeeMeta, accesstoken, accountId, eventId);            
+            return DataUtility.GetJObject(connection, Extensions.Actions.AttendeeMeta, connection.AccountId, connection.EventId);            
         }
         ///regsessionmetadata/        
-        public static JObject GetRegSessionMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetRegSessionMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.RegSessionMeta, accesstoken, accountId, eventId);            
+            return DataUtility.GetJObject(connection, Extensions.Actions.RegSessionMeta, connection.AccountId, connection.EventId);            
         }
 
         ///speakermetadata/
-        public static JObject GetSpeakerMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetSpeakerMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.SpeakerMeta, accesstoken, accountId, eventId);
+            return DataUtility.GetJObject(connection, Extensions.Actions.SpeakerMeta, connection.AccountId, connection.EventId);
         }
 
         /*
         GET /sessiontrackmetadata/[accountid]/[eventid] accountid
         */
-        public static JObject GetSessionTrackMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetSessionTrackMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.SessionTrackMeta, accesstoken, accountId, eventId);
+            return DataUtility.GetJObject(connection, Extensions.Actions.SessionTrackMeta, connection.AccountId, connection.EventId);
         }
 
 
         /*
         GET /meetingmetadata/[accountid]/[eventid] accountid
         */
-        public static JObject GetMeetingMetaData(string baseUrl, string accesstoken, string accountId, string eventId)
+        public static JObject GetMeetingMetaData(ScribeConnection connection)
         {
-            return DataUtility.GetJObject(baseUrl, Extensions.Actions.MeetingMeta, accesstoken, accountId, eventId);
+            return DataUtility.GetJObject(connection, Extensions.Actions.MeetingMeta, connection.AccountId, connection.EventId);
         }
         #endregion 
 

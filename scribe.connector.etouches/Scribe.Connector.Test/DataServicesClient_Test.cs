@@ -56,7 +56,7 @@ namespace Scribe.Connector.Test
         public void TestGetAttendeeMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetAttendeeMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetAttendeeMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -64,7 +64,7 @@ namespace Scribe.Connector.Test
         public void TestGetRegSessionMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetRegSessionMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetRegSessionMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -72,7 +72,7 @@ namespace Scribe.Connector.Test
         public void TestGetSessionMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetSessionMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetSessionMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -80,7 +80,7 @@ namespace Scribe.Connector.Test
         public void TestGetSpeakerMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetSpeakerMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetSpeakerMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -88,7 +88,7 @@ namespace Scribe.Connector.Test
         public void TestGetSessionTrackMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetSessionTrackMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetSessionTrackMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 
@@ -96,7 +96,7 @@ namespace Scribe.Connector.Test
         public void TestGetMeetingMetaData()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.GetMeetingMetaData(BaseUrl, AccessToken, AccountId, EventId);
+            var data = etouches.DataServicesClient.GetMeetingMetaData(Connector.Connection);
             Assert.IsNotNull(data);
         }
 

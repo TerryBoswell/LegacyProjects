@@ -41,7 +41,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetMeetingMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
+            var data = DataServicesClient.GetMeetingMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 

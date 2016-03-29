@@ -54,7 +54,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetRegSessionMetaData(Connection.BaseUrl, Connection.AccessToken, Connection.AccountId, Connection.EventId);
+            var data = DataServicesClient.GetRegSessionMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 

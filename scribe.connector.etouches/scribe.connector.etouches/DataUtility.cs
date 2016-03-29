@@ -28,20 +28,37 @@ namespace Scribe.Connector.etouches
             return key;
         }
 
-        public static JObject GetJObject(string baseUrl, Extensions.Actions action, string accesstoken, string accountId = null,
+        public static JObject GetJObject(ScribeConnection connection, Extensions.Actions action, string accountId = null,
             string eventId = null)
         {
             var strAction = action.Name();
-            HttpResponse result = DoHttpGetInternal(baseUrl, strAction, accesstoken, accountId, eventId);
+            var key = Generatekey(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, null, null);
+            JObject json = ConnectorCache.GetCachedData<JObject>(key);
+            if (json != null)
+            {
+                Logger.WriteDebug($"The action {strAction} successfully returned in GetJobject from cache.");
+                return json;
+            }
+            HttpResponse result = DoHttpGetInternal(connection.BaseUrl, strAction, connection.AccessToken, accountId, eventId);
+            if (!String.IsNullOrEmpty(result.RawText) && result.RawText.StartsWith("{\"status\":\"error\",\"msg\":\"Not authorized to access account"))
+            {
+                connection.ReConnnect();
+                if (connection.IsConnected)
+                    result = result = DoHttpGetInternal(connection.BaseUrl, strAction, connection.AccessToken, accountId, eventId);
+            }
             if (result == null)
             {
                 Logger.WriteError("Result of get was null in GetJObject");
                 throw new ApplicationException("Result of get was null");
             }
             var res = result.RawText;
-            var json = JObject.Parse(res);
+            json = JObject.Parse(res);
+
             if (json != null)
+            {
+                ConnectorCache.StoreData(key, json, connection.TTL);
                 Logger.WriteDebug($"The action {strAction} successfully returned in GetJobject");
+            }
             return json;
         }
 
