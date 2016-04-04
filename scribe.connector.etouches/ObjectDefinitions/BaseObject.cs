@@ -8,18 +8,16 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 {
     abstract class BaseObject : ObjectDefinition
     {
-        protected string EventId;
-        protected string AccountId;
+        protected ScribeConnection Connection;
         protected Core.ConnectorApi.Query.Query Query;
         protected System.DateTime? ModifiedAfterDate = null;
         protected System.DateTime? AttendeeModifiedAfterDate = null;
         protected bool HasChildren;
         protected Dictionary<string, string> KeyPairs = new Dictionary<string, string>();
         protected List<string> ChildNames = new List<string>();
-        public BaseObject(string accountId, string eventId, string name, string fullName, string description)
+        public BaseObject(ScribeConnection connection, string name, string fullName, string description)
         {
-            this.EventId = eventId;
-            this.AccountId = accountId;
+            this.Connection = connection;
             FullName = fullName;
             Description = description;
             Hidden = false;
@@ -78,7 +76,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
 
                 //We have to make a presumption that we will key off the name last modified from our meta data
-                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{DataServicesClient.LastModifiedParameter}")
+                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{Constants.LastModifiedParameter}")
                     && lookupCondition.RightValue.Value != null)
                 {
                     System.DateTime d;
@@ -87,7 +85,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
 
 
-                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{DataServicesClient.AttendeeLastModifiedParameter}")
+                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{Constants.AttendeeLastModifiedParameter}")
                     && lookupCondition.RightValue.Value != null)
                 {
                     System.DateTime d;
@@ -106,14 +104,10 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         virtual protected IEnumerable<DataEntity> GetDataEntites(System.Data.DataSet ds, Core.ConnectorApi.Query.Query query)
         {
-            var empty = new List<DataEntity>();
-            if (!ds.Tables.Contains("ResultSet")) return empty;
-
             var table = ds.Tables["ResultSet"];
             if (table.Rows.Count == 0)
-                return empty;
+                return new List<DataEntity>();
             var filteredRows = table.Select(query.ToSelectExpression());
-
             return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
         }
     }

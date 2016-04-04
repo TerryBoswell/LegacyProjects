@@ -49,14 +49,11 @@ namespace Scribe.Connector.etouches
             }
         }
 
-        public static void StoreData(string cacheKey, object data)
+        public static void StoreData(string cacheKey, object data, int ttl)
         {
             cacheLock.EnterWriteLock();
             try
             {
-                int ttl;
-                if (!int.TryParse(Connector.TTL, out ttl))
-                    ttl = 20;
                 CacheItemPolicy cip = new CacheItemPolicy()
                 {
                      

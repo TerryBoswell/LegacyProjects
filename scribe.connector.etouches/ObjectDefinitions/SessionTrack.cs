@@ -14,7 +14,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         /// </summary>
         /// <param name="accountId"></param>
         /// <param name="eventId"></param>
-        public SessionTrack(string accountId, string eventId): base(accountId, eventId,
+        public SessionTrack(ScribeConnection connection): base(connection,
             Constants.SessionTrack_Name, Constants.SessionTrack_FullName, Constants.SessionTrack_Description)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
@@ -43,7 +43,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetSessionTrackMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+            var data = DataServicesClient.GetSessionTrackMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 
@@ -51,7 +51,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         {
             this.SetQuery(query);
 
-            var ds = DataServicesClient.ListSessionTracks(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.KeyPairs);
+            var ds = DataServicesClient.ListSessionTracks(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;
@@ -66,7 +66,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 de.Children = new Core.ConnectorApi.Query.EntityChildren();
                 if (this.ChildNames.Any(x => x.Equals(Constants.Session_Name)))
                 {
-                    var ds = DataServicesClient.ListSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListSessions(Connection);
                     var table = ds.Tables["ResultSet"];
 
                     var filteredRows = table.Select($"{Constants.Session_tempPk} = '{de.Properties[Constants.Session_PK]}'");

@@ -8,13 +8,12 @@ namespace Scribe.Connector.etouches
 {
     class MetadataProvider : IMetadataProvider
     {
-        private string eventId;
-        private string accountId;
+
+        private readonly ScribeConnection connection;
         
-        public MetadataProvider(string accountId, string eventId)
+        public MetadataProvider(ScribeConnection connection)
         {
-            this.eventId = eventId;
-            this.accountId = accountId;
+            this.connection = connection;
         }
 
         public void ResetMetadata()
@@ -61,13 +60,13 @@ namespace Scribe.Connector.etouches
         {
             return new List<IObjectDefinition>
             {
-                new ObjectDefinitions.Event(accountId, eventId),
-                new ObjectDefinitions.Attendee(accountId, eventId),
-                new ObjectDefinitions.RegSession(accountId, eventId),
-                new ObjectDefinitions.Speaker(accountId, eventId),
-                new ObjectDefinitions.Session(accountId, eventId),
-                new ObjectDefinitions.Meeting(accountId, eventId),
-                new ObjectDefinitions.SessionTrack(accountId, eventId)                
+                new ObjectDefinitions.Event(connection),
+                new ObjectDefinitions.Attendee(connection),
+                new ObjectDefinitions.RegSession(connection),
+                new ObjectDefinitions.Speaker(connection),
+                new ObjectDefinitions.Session(connection),
+                new ObjectDefinitions.Meeting(connection),
+                new ObjectDefinitions.SessionTrack(connection)                
                 //new ObjectDefinitions.Category(eventId),
                 //new ObjectDefinitions.Hotel(eventId),
                 //new ObjectDefinitions.Invoice(eventId),

@@ -14,7 +14,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     class Attendee : BaseObject
     {
 
-        public Attendee(string accountId, string eventId) : base(accountId, eventId, Constants.Attendee_FullName, 
+        public Attendee(ScribeConnection connection) : base(connection, Constants.Attendee_FullName, 
             Constants.Attendee_Name, Constants.Attendee_Description )
         {
             RelationshipDefinitions = getRelationshipDefinitions();
@@ -42,14 +42,14 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetAttendeeMetaData(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+            var data = DataServicesClient.GetAttendeeMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListAttendees(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId, this.ModifiedAfterDate, null, this.KeyPairs);
+            var ds = DataServicesClient.ListAttendees(this.Connection, this.ModifiedAfterDate, null, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateChildData(dataEntities);                         
             return dataEntities;
@@ -65,7 +65,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 //Handle the RegSession Relationship
                 if (this.ChildNames.Any(x => x.Equals(Constants.RegSession_Name)))
                 {
-                    var ds = DataServicesClient.ListRegSessions(Connector.BaseUrl, Connector.AccessToken, this.AccountId, this.EventId);
+                    var ds = DataServicesClient.ListRegSessions(Connection);
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
                     List<DataEntity> children = new List<DataEntity>();

@@ -10,3 +10,16 @@
 \\psf\Home\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\bin\Release\Newtonsoft.Json.xml
 \\psf\Home\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\obj\Release\Scribe.Connector.etouches.dll
 \\psf\Home\Scribe\Scribe.Connector.etouches\Scribe.Connector.etouches\obj\Release\Scribe.Connector.etouches.pdb
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Scribe.Connector.etouches.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Scribe.Connector.etouches.pdb
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\EasyHttp.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\JsonFx.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Newtonsoft.Json.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Scribe.Core.Common.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Scribe.Core.ConnectorApi.dll
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\EasyHttp.pdb
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\JsonFx.xml
+C:\_Git\etouches\Scribe.Connector.etouches\bin\Release\Newtonsoft.Json.xml
+C:\_Git\etouches\Scribe.Connector.etouches\obj\Release\Scribe.Connector.etouches.csprojResolveAssemblyReference.cache
+C:\_Git\etouches\Scribe.Connector.etouches\obj\Release\Scribe.Connector.etouches.dll
+C:\_Git\etouches\Scribe.Connector.etouches\obj\Release\Scribe.Connector.etouches.pdb

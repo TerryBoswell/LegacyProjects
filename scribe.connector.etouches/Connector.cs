@@ -1,7 +1,6 @@
 ﻿using Scribe.Core.ConnectorApi;
 using Scribe.Core.ConnectorApi.Actions;
 using Scribe.Core.ConnectorApi.ConnectionUI;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,97 +24,29 @@ namespace Scribe.Connector.etouches
     public class Connector : IConnector
     {
 
-        public const string API_URI_PATTERN = @"https://{0}.eiseverywhere.com";
-
-        public static string EventId = String.Empty;
-        public static string AccountId = String.Empty;
-        public static string TTL = "20";
-        public static int PageSize = 1024;
-        public static string ApiKey = String.Empty;
-        private string subDomain = string.Empty;
-        private string uri = string.Empty;
-        public static string BaseUrl = "https://eiseverywhere.com";
-        public static string AccessToken = string.Empty;
-
-        private Dictionary<string, string> _connectionProperties;
+        public ScribeConnection Connection;
+        public ScribeConnection V2Connection;
 
         public void Connect(IDictionary<string, string> properties)
         {
-
-            if (!Log.Logger.IsEnabled(Serilog.Events.LogEventLevel.Debug))
-            {
-                Log.Logger = new LoggerConfiguration()
-                    .WriteTo.RollingFile($"c:\\temp\\{properties["ScribeOnline_ConnectionInfoDBId"]}.txt")
-                    .MinimumLevel.Debug()
-                    .CreateLogger();
-            }
-                
-
-            //retrieve and test the AccountId
-            AccountId = properties["AccountId"];
-            Int32 numericResult = 0;
-            Int32.TryParse(AccountId, out numericResult);
-            if (numericResult == 0) throw new ApplicationException("Account Id must be numeric.");
-
-            //retrieve and test the EventId
-            EventId = properties["EventId"];
-            numericResult = 0;
-            Int32.TryParse(EventId, out numericResult);
-            if (numericResult == 0) throw new ApplicationException("Event Id must be numeric.");
-
-            //retrieve and test the EventId
-            if (properties.ContainsKey("TTL"))
-            {
-                TTL = properties["TTL"];
-                numericResult = 0;
-                Int32.TryParse(TTL, out numericResult);
-                if (numericResult == 0) throw new ApplicationException("TTL must be numeric.");
-            }
-            else
-                TTL = "20";
-
-            //retrieve the page size
-            if (properties.ContainsKey("PageSize"))
-            {
-                var pageSize = properties["PageSize"];
-                var intResult = 0;
-                if (Int32.TryParse(pageSize, out intResult))
-                    PageSize = intResult;
-            }
-
-            //retrieve the ApiKey, scribe's UI ensures its not empty
-            ApiKey = properties["ApiKey"];
-
-            //retrieve the SubDomain, this can be empty
-            this.subDomain = properties["SubDomain"];
-            if (string.IsNullOrEmpty(subDomain)) subDomain = "www";
-            //remove any trailing "."
-            if (subDomain.EndsWith(".")) subDomain = subDomain.Remove(subDomain.Length - 1);
-
-
-            if (!String.IsNullOrEmpty(properties["BaseUrl"]))
-            {
-                BaseUrl = properties["BaseUrl"];
-            }
-            else
-            {
-                //use the default eiseverywhere.com
-                var uri = new UriBuilder(BaseUrl);
-                BaseUrl = uri.ToString();
-                //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
-                BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
-            }
-
+            this.Connection = new ScribeConnection(properties, ScribeConnection.ConnectionVersion.V1);
             //attempt connection & set connection status
-            this.IsConnected = TryConnect();
+            this.IsConnected = this.Connection.TryConnect();
+
+            try
+            {
+                this.V2Connection = new ScribeConnection(properties, ScribeConnection.ConnectionVersion.V2);
+                this.IsV2Connected = this.V2Connection.TryConnect();
+            }
+            catch 
+            { }
         }
 
-        public bool TryConnect()
+        
+        public void SetPageSize(int pageSize)
         {
-            AccessToken = DataServicesClient.Authorize(BaseUrl, AccountId, ApiKey);
-            return true;
+            Connection.PageSize = pageSize;
         }
-
         public Guid ConnectorTypeId
         {
             get { return new Guid(ConnectorSettings.ConnectorTypeId); }
@@ -141,25 +72,25 @@ namespace Scribe.Connector.etouches
             switch(query.RootEntity.ObjectDefinitionFullName)
             {
                 case "Event":
-                    var evnt = new ObjectDefinitions.Event(Connector.AccountId, Connector.EventId);
+                    var evnt = new ObjectDefinitions.Event(this.Connection);
                     return evnt.ExecuteQuery(query);
                 case "Attendee":
-                    var attendee = new ObjectDefinitions.Attendee(Connector.AccountId, Connector.EventId);
+                    var attendee = new ObjectDefinitions.Attendee(this.Connection);
                     return attendee.ExecuteQuery(query);
                 case "RegSession":
-                    var regSession = new ObjectDefinitions.RegSession(Connector.AccountId, Connector.EventId);
+                    var regSession = new ObjectDefinitions.RegSession(this.Connection);
                     return regSession.ExecuteQuery(query);
                 case "Session":
-                    var session = new ObjectDefinitions.Session(Connector.AccountId, Connector.EventId);
+                    var session = new ObjectDefinitions.Session(this.Connection);
                     return session.ExecuteQuery(query);
                 case "Meeting":
-                    var meeting = new ObjectDefinitions.Meeting(Connector.AccountId, Connector.EventId);
+                    var meeting = new ObjectDefinitions.Meeting(this.Connection);
                     return meeting.ExecuteQuery(query);
                 case "Speaker":
-                    var speaker = new ObjectDefinitions.Speaker(Connector.AccountId, Connector.EventId);
+                    var speaker = new ObjectDefinitions.Speaker(this.Connection);
                     return speaker.ExecuteQuery(query);
                 case "SessionTrack":
-                    var sessiontrack = new ObjectDefinitions.SessionTrack(Connector.AccountId, Connector.EventId);
+                    var sessiontrack = new ObjectDefinitions.SessionTrack(this.Connection);
                     return sessiontrack.ExecuteQuery(query);
                 default:
                     throw new NotImplementedException();
@@ -172,12 +103,13 @@ namespace Scribe.Connector.etouches
 
         public IMetadataProvider GetMetadataProvider()
         {
-            this.metadataProvider = new MetadataProvider(AccountId, EventId);
+            this.metadataProvider = new MetadataProvider(this.Connection);
             return this.metadataProvider;            
         }
 
         public bool IsConnected { get; set; }
 
+        public bool IsV2Connected { get; set; }
         public string PreConnect(IDictionary<string, string> properties)
         {
             var form = new FormDefinition
@@ -221,22 +153,7 @@ namespace Scribe.Connector.etouches
                             IsRequired = true,
                             Label = "Page Size",
                             PropertyName = "PageSize"
-                        },
-                        new EntryDefinition
-                        {
-                            InputType = InputType.Text,                               
-                            IsRequired = false,
-                            Label = "Sub Domain (qa, supportqa, etc...)",
-                            PropertyName = "SubDomain"
-                        },
-                        new EntryDefinition
-                        {
-                            InputType = InputType.Text,                               
-                            IsRequired = false,
-                            Label = "Base URL (leave blank for https://eiseverywhere.com)",
-                            PropertyName = "BaseUrl"
-                        }
-                    } 
+                        }                    } 
 
 
                 };

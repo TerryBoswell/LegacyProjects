@@ -23,8 +23,11 @@ EventMetaData
  http://ec2-54-175-237-66.compute-1.amazonaws.com/eventmetadata/3037?accesstoken=CtKwe4x0ujEyPor6pcqJzsL9fvHPeFYWte7tHIWIYtcie
 
 Phase 2
-Week ending 3/13(sunday) 9hrs
-Week ending 3/20 2hrs
+
+update
+
+
+week ending 4/2
 
  https://datasvc.etouches.com/sessionmetadata/3037/86972?accesstoken=j0gomFFX1TGSGCET0UBdsE0375iiIFByr5wH28XipBjQcie
 
@@ -33,3 +36,8 @@ Week ending 3/20 2hrs
 Event.attendees_lastmodified
 
 powershell -executionpolicy bypass -File .\postbuild.ps1
+
+PS C:\Users\Home\Dropbox\Projects\etouches\Scribe.Connector.etouches\Scribe.Connector.etouches\PowerShell> powershell -e
+xecutionpolicy bypass -File .\postbuild.ps1
+
+{"status":"error","msg":"Not authorized to access account 1"}

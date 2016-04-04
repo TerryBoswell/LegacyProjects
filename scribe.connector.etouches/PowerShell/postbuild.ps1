@@ -37,7 +37,7 @@ stop-service -displayname "Scribe Online Agent"
 Start-Sleep -s 5
 Write-Host "Replacing Files";
 Remove-Item 'C:\Program Files (x86)\Scribe Software\Scribe Online Agent\Connectors\Scribe.Connector.eTouches\*' -Recurse
-Copy-Item 'C:\_Git\etouches\scribe.connector.etouches\scribe.connector.etouches\bin\Debug\*' -Destination 'C:\Program Files (x86)\Scribe Software\Scribe Online Agent\Connectors\Scribe.Connector.eTouches' -Recurse
+Copy-Item 'C:\_Git\etouches\Scribe.Connector.etouches\bin\debug\*' -Destination 'C:\Program Files (x86)\Scribe Software\Scribe Online Agent\Connectors\Scribe.Connector.eTouches' -Recurse
 Start-Sleep -s 5
 Write-Host "Starting Service";
 start-service -displayname "Scribe Online Agent"
