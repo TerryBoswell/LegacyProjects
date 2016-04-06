@@ -122,4 +122,4 @@ C:\_Git\etouches\Scribe.Connector.Test\bin\Debug\Microsoft.VisualStudio.QualityT
 C:\_Git\etouches\Scribe.Connector.Test\obj\Debug\Scribe.Connector.Test.csprojResolveAssemblyReference.cache
 C:\_Git\etouches\Scribe.Connector.Test\obj\Debug\Scribe.Connector.Test.dll
 C:\_Git\etouches\Scribe.Connector.Test\obj\Debug\Scribe.Connector.Test.pdb
-C:\_Git\etouches\Scribe.Connector.Test\bin\Debug\Scribe.Connector.Test.dll.config
+C:\_Git\etouches\Scribe.Connector.Test\bin\Debug\Scribe.Connector.etouches.dll.config

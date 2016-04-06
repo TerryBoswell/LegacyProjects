@@ -66,7 +66,8 @@ namespace Scribe.Connector.etouches
                 new ObjectDefinitions.Speaker(connection),
                 new ObjectDefinitions.Session(connection),
                 new ObjectDefinitions.Meeting(connection),
-                new ObjectDefinitions.SessionTrack(connection)                
+                new ObjectDefinitions.SessionTrack(connection),
+                new ObjectDefinitions.FinancialTransaction(connection)                
                 //new ObjectDefinitions.Category(eventId),
                 //new ObjectDefinitions.Hotel(eventId),
                 //new ObjectDefinitions.Invoice(eventId),

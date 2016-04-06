@@ -111,6 +111,14 @@ namespace Scribe.Connector.Test
             Assert.IsNotNull(data);
         }
 
+        [TestMethod]
+        public void TestGetFinancialTransactionMetaData()
+        {
+            VerifyAccessToken();
+            var data = etouches.DataServicesClient.GetMeetingMetaData(Connector.Connection);
+            Assert.IsNotNull(data);
+        }
+
         #endregion
 
         #region List Tests
@@ -362,6 +370,14 @@ namespace Scribe.Connector.Test
                 keyPairs.Add(colName, value);
             }
             return keyPairs;
+        }
+
+        [TestMethod]
+        public void TestListFinancialTransactionss()
+        {
+            VerifyAccessToken();
+            var data = etouches.DataServicesClient.ListFinacialTransactions(Connector.Connection);
+            Assert.IsNotNull(data);
         }
         #endregion
 

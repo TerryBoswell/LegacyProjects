@@ -14,12 +14,6 @@ namespace Scribe.Connector.etouches
     
     public static class DataServicesClient
     {
-        #region Reserved Property Names For Rest Calls
-        /// <summary>
-        /// This is the property we will look for to pass to the lastmodified-lt query parameter in selected values
-        /// </summary>
-        
-        #endregion
 
         public static string Authorize(string baseUrl, string accountId, string apiKey)
         {
@@ -84,6 +78,14 @@ namespace Scribe.Connector.etouches
         public static JObject GetMeetingMetaData(ScribeConnection connection)
         {
             return DataUtility.GetJObject(connection, Extensions.Actions.MeetingMeta, connection.AccountId, connection.EventId);
+        }
+
+        /*
+        GET /financialtransactionmetadata/[accountid]/[eventid] accountid
+        */
+        public static JObject GetFinancialTransactionMetaData(ScribeConnection connection)
+        {
+            return DataUtility.GetJObject(connection, Extensions.Actions.FinancialTransactionMeta, connection.AccountId, connection.EventId);
         }
         #endregion 
 
@@ -191,6 +193,19 @@ namespace Scribe.Connector.etouches
             Dictionary<string, string> keypairs = null)
         {
             return DataUtility.GetDataset(connection, Extensions.Actions.Meeting, connection.EventId, null, null, null, keypairs);
+        }
+
+        /*
+        /financialtransactionlist/[accountid]/[eventid] accountid
+        accesstoken
+        deleted (optional)
+        fields (optional)
+        pageNumber (optional)
+        pageSize (optional)        */
+        public static DataSet ListFinacialTransactions(ScribeConnection connection,
+            Dictionary<string, string> keypairs = null)
+        {
+            return DataUtility.GetDataset(connection, Extensions.Actions.FinanacialTransaction, connection.EventId, null, null, null, keypairs);
         }
 
         #endregion

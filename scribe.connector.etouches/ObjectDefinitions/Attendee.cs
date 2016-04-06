@@ -9,7 +9,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     /// <summary>
     /// Attendee
     /// Parents :
-    /// Children : RegSessions
+    /// Children : RegSessions, FinancialTransactions
     /// </summary>
     class Attendee : BaseObject
     {
@@ -35,7 +35,17 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 RelatedObjectDefinitionFullName = Constants.RegSession_FullName,
                 RelatedProperties = Constants.Attendee_PK
             });
-
+            relationships.Add(new RelationshipDefinition()
+            {
+                Description = string.Empty,
+                Name = Constants.BuildChildRelationship(Constants.FinancialTranstion_Name, this.Name),
+                FullName = Constants.FinancialTranstion_FullName,
+                RelationshipType = RelationshipType.Child,
+                ThisObjectDefinitionFullName = this.FullName,
+                ThisProperties = Constants.FinancialTranstion_PK,
+                RelatedObjectDefinitionFullName = Constants.FinancialTranstion_FullName,
+                RelatedProperties = Constants.FinancialTranstion_PK
+            });
             return relationships;
 
         }
@@ -73,6 +83,18 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                         var c in filteredRows.ToDataEntities(Constants.RegSession_Name))
                         children.Add(c);
                     de.Children.Add(Constants.RegSession_Name, children);
+                }
+
+                if (this.ChildNames.Any(x => x.Equals(Constants.FinancialTranstion_Name)))
+                {
+                    var ds = DataServicesClient.ListFinacialTransactions(Connection);
+                    var table = ds.Tables["ResultSet"];
+                    var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
+                    List<DataEntity> children = new List<DataEntity>();
+                    foreach (
+                        var c in filteredRows.ToDataEntities(Constants.FinancialTranstion_Name))
+                        children.Add(c);
+                    de.Children.Add(Constants.FinancialTranstion_Name, children);
                 }
             }
         }

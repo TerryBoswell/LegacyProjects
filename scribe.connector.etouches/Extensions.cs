@@ -17,6 +17,7 @@ namespace Scribe.Connector.etouches
             Session,
             SessionTrack,
             Meeting,
+            FinanacialTransaction,
             EventMeta,
             SessionMeta,
             AttendeeMeta,
@@ -24,6 +25,7 @@ namespace Scribe.Connector.etouches
             SpeakerMeta,
             SessionTrackMeta,
             MeetingMeta,
+            FinancialTransactionMeta,
             EventCreate
         }
 
@@ -45,6 +47,8 @@ namespace Scribe.Connector.etouches
                     return "sessionmetadata.json";
                 case Actions.EventMeta:
                     return "eventmetadata.json";
+                case Actions.FinancialTransactionMeta:
+                    return "financialtransactionmetadata.json";
                 case Actions.Event:
                    return "eventlist.json";
                 case Actions.Attendee:
@@ -59,6 +63,8 @@ namespace Scribe.Connector.etouches
                     return "sessiontracklist.json";
                 case Actions.Meeting:
                     return "meetinglist.json";
+                case Actions.FinanacialTransaction:
+                    return "financialtransactionlist.json";
                 case Actions.EventCreate:
                     return "createEvent.json";
                 default:

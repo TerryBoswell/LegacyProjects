@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
@@ -60,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ConnectorCache.cs" />
     <Compile Include="DataServicesClient.cs" />
@@ -68,8 +70,10 @@
     <Compile Include="ConnectorSettings.cs" />
     <Compile Include="DataTableQueryBuilder.cs" />
     <Compile Include="DataUtility.cs" />
+    <Compile Include="Logging\DiagnosticsLog.cs" />
     <Compile Include="MetadataProvider.cs" />
     <Compile Include="ObjectDefinitions\Constants.cs" />
+    <Compile Include="ObjectDefinitions\FinancialTransaction.cs" />
     <Compile Include="ObjectDefinitions\Meeting.cs" />
     <Compile Include="ObjectDefinitions\RegSession.cs" />
     <Compile Include="ObjectDefinitions\Attendee.cs" />
@@ -88,13 +92,14 @@
     <Compile Include="ObjectDefinitions\Event.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScribeConnection.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="StandardConnectorSettings.cs" />
     <Compile Include="V2Results\EventResult.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="Scribe.Connector.etouches.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="PowerShell\postbuild.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

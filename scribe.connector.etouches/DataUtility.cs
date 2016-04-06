@@ -340,50 +340,53 @@ namespace Scribe.Connector.etouches
             string eventId = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null, string additionCondition = null,
             int? pageSize = null, Dictionary<string, string> keypairs = null, int? pageNumber = null)
         {
-            var http = new HttpClient();
-            //var uri = new UriBuilder(baseUrl);
-            if (String.IsNullOrEmpty(action))
-                throw new ApplicationException("An Action must be provided");
-            if (String.IsNullOrEmpty(baseUrl))
-                throw new ApplicationException("A base url must be provided");
-            if (String.IsNullOrEmpty(accesstoken))
-                throw new ApplicationException("An access token must be provided");
-            if (String.IsNullOrEmpty(accountId) && !String.IsNullOrEmpty(eventId))
-                throw new ApplicationException("An account id must be provided when an event id is provided");
-
-            var path = string.Empty;
-            if (String.IsNullOrEmpty(eventId))
-                path = $"{baseUrl}/{action}/{accountId}?accesstoken={accesstoken}";
-            else
-                path = $"{baseUrl}/{action}/{accountId}/{eventId}?accesstoken={accesstoken}";
-
-            if (modifiedBefore.HasValue)
+            using (var diag = new DiagnosticsLog(action))
             {
-                var ltDate = modifiedBefore.Value.ToString("yyyy-MM-dd");
-                path = $"{path}&lastmodified-lt='{ltDate}'";
-            }
-            if (modifiedAfter.HasValue)
-            {
-                var gtDate = modifiedAfter.Value.ToString("yyyy-MM-dd");
-                path = $"{path}&lastmodified-gt='{gtDate}'";
-            }
+                var http = new HttpClient();
+                //var uri = new UriBuilder(baseUrl);
+                if (String.IsNullOrEmpty(action))
+                    throw new ApplicationException("An Action must be provided");
+                if (String.IsNullOrEmpty(baseUrl))
+                    throw new ApplicationException("A base url must be provided");
+                if (String.IsNullOrEmpty(accesstoken))
+                    throw new ApplicationException("An access token must be provided");
+                if (String.IsNullOrEmpty(accountId) && !String.IsNullOrEmpty(eventId))
+                    throw new ApplicationException("An account id must be provided when an event id is provided");
 
-            if (!String.IsNullOrEmpty(additionCondition))
-                path = $"{path}&{additionCondition}";
+                var path = string.Empty;
+                if (String.IsNullOrEmpty(eventId))
+                    path = $"{baseUrl}/{action}/{accountId}?accesstoken={accesstoken}";
+                else
+                    path = $"{baseUrl}/{action}/{accountId}/{eventId}?accesstoken={accesstoken}";
 
-            if (pageSize.HasValue)
-                path = $"{path}&pageSize={pageSize.Value}";
-            if (pageNumber.HasValue)
-                path = $"{path}&pageNumber={pageNumber.Value}";
-            if (keypairs != null && keypairs.Any())
-                foreach (var kp in keypairs)
-                    path += $"&{kp.Key}={kp.Value}";
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            var result = http.Get(path);
-            sw.Stop();
-            Logger.WriteDebug($"Execution of {path} took {sw.Elapsed.TotalSeconds} seconds");
-            return result;
+                if (modifiedBefore.HasValue)
+                {
+                    var ltDate = modifiedBefore.Value.ToString("yyyy-MM-dd");
+                    path = $"{path}&lastmodified-lt='{ltDate}'";
+                }
+                if (modifiedAfter.HasValue)
+                {
+                    var gtDate = modifiedAfter.Value.ToString("yyyy-MM-dd");
+                    path = $"{path}&lastmodified-gt='{gtDate}'";
+                }
+
+                if (!String.IsNullOrEmpty(additionCondition))
+                    path = $"{path}&{additionCondition}";
+
+                if (pageSize.HasValue)
+                    path = $"{path}&pageSize={pageSize.Value}";
+                if (pageNumber.HasValue)
+                    path = $"{path}&pageNumber={pageNumber.Value}";
+                if (keypairs != null && keypairs.Any())
+                    foreach (var kp in keypairs)
+                        path += $"&{kp.Key}={kp.Value}";
+                System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+                sw.Start();
+                var result = http.Get(path);
+                sw.Stop();
+                Logger.WriteDebug($"Execution of {path} took {sw.Elapsed.TotalSeconds} seconds");
+                return result;
+            }
         }
 
 

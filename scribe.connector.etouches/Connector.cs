@@ -1,4 +1,5 @@
-﻿using Scribe.Core.ConnectorApi;
+﻿using Scribe.Connector.etouches.ObjectDefinitions;
+using Scribe.Core.ConnectorApi;
 using Scribe.Core.ConnectorApi.Actions;
 using Scribe.Core.ConnectorApi.ConnectionUI;
 using System;
@@ -92,6 +93,10 @@ namespace Scribe.Connector.etouches
                 case "SessionTrack":
                     var sessiontrack = new ObjectDefinitions.SessionTrack(this.Connection);
                     return sessiontrack.ExecuteQuery(query);
+                case "FinacialTransaction":
+                    var financialTransaction = new ObjectDefinitions.FinancialTransaction(this.Connection);
+                    return financialTransaction.ExecuteQuery(query);
+                    
                 default:
                     throw new NotImplementedException();
             }

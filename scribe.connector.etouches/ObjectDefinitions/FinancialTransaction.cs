@@ -8,13 +8,13 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     /// <summary>
     /// Meeting 
     /// Children  - None
-    /// Parents - Events
+    /// Parents - Events, Attendee
     /// </summary>
-    class Meeting : BaseObject
+    class FinancialTransaction : BaseObject
     {
 
-        public Meeting(ScribeConnection connection) : base(connection,
-            Constants.Meeting_Name, Constants.Meeting_FullName, Constants.Meeting_Description)
+        public FinancialTransaction(ScribeConnection connection) : base(connection,
+            Constants.FinancialTranstion_Name, Constants.FinancialTranstion_FullName, Constants.FinancialTranstion_Description)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
             setPropertyDefinitions();
@@ -35,13 +35,25 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 RelatedProperties = Constants.Event_PK
             });
 
+            relationships.Add(new RelationshipDefinition()
+            {
+                Description = string.Empty,
+                Name = Constants.BuildParentRelationship(this.Name, Constants.Attendee_Name),
+                FullName = Constants.Attendee_FullName,
+                RelationshipType = RelationshipType.Parent,
+                ThisObjectDefinitionFullName = this.FullName,
+                ThisProperties = Constants.Attendee_PK,
+                RelatedObjectDefinitionFullName = Constants.Attendee_FullName,
+                RelatedProperties = Constants.Attendee_PK
+            });
+
             return relationships;
 
         }
 
         private void setPropertyDefinitions()
         {
-            var data = DataServicesClient.GetMeetingMetaData(Connection);
+            var data = DataServicesClient.GetFinancialTransactionMetaData(Connection);
             base.SetPropertyDefinitions(data);
         }
 
@@ -49,7 +61,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListMeetings(Connection, this.KeyPairs);
+            var ds = DataServicesClient.ListFinacialTransactions(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;
@@ -74,6 +86,21 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     {
                         children.Add(parent);
                         de.Children.Add(Constants.Event_Name, children);
+                    }
+                }
+
+                if (this.ChildNames.Any(x => x.Equals(Constants.Attendee_Name)))
+                {
+                    var ds = DataServicesClient.ListEvents(Connection);
+                    var table = ds.Tables["ResultSet"];
+
+                    var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
+                    List<DataEntity> children = new List<DataEntity>();
+                    var parent = filteredRows.FirstDataEntity(Constants.Attendee_Name);
+                    if (parent != null)
+                    {
+                        children.Add(parent);
+                        de.Children.Add(Constants.Attendee_Name, children);
                     }
                 }
 

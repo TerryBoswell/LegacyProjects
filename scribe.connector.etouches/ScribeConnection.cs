@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,15 +39,19 @@ namespace Scribe.Connector.etouches
             this.Version = version;
 
             connectionKey = Guid.NewGuid();
+            var keyName = string.Empty;
             if (version == ConnectionVersion.V1)
-                AccountId = properties["AccountId"];
+                keyName = "AccountId";
             else
-                AccountId = properties["V2AccountId"];
+                keyName = "V2AccountId";
 
             Int32 numericResult = 0;
-            Int32.TryParse(AccountId, out numericResult);
-            if (numericResult == 0) throw new ApplicationException("Account Id must be numeric.");
-
+            if (properties.ContainsKey(keyName))
+            { 
+                AccountId = properties[keyName];
+                Int32.TryParse(AccountId, out numericResult);
+                if (numericResult == 0) throw new ApplicationException("Account Id must be numeric.");
+            }
             //retrieve and test the EventId
             EventId = properties["EventId"];
             numericResult = 0;
@@ -76,9 +82,9 @@ namespace Scribe.Connector.etouches
             }
 
             //retrieve the ApiKey, scribe's UI ensures its not empty
-            if (version == ConnectionVersion.V1)
+            if (version == ConnectionVersion.V1 && properties.ContainsKey("ApiKey"))
                 this.apiKey = properties["ApiKey"];
-            else
+            else if (properties.ContainsKey("V2ApiKey"))
                 this.apiKey = properties["V2ApiKey"];
 
             //retrieve the SubDomain, this can be empty
@@ -89,11 +95,11 @@ namespace Scribe.Connector.etouches
 
             if (version == ConnectionVersion.V1)
             {
-                BaseUrl = ConfigurationSettings.AppSettings["RestURL"];
+                BaseUrl = Configuration.RestURL;
             }
             else if (version == ConnectionVersion.V2)
             {
-                BaseUrl = ConfigurationSettings.AppSettings["V2URL"];
+                BaseUrl = Configuration.V2URL;
             }
             else
             {

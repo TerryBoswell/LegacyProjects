@@ -26,6 +26,12 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string Event_Description = "A single Event";
         public static string Event_PK = "eventid";
 
+        public static string FinancialTranstion_Name = "FinacialTransaction";
+        public static string FinancialTranstion_Description = "eSocial Financial Transactions: Charges,Payments, Credits, Taxes";
+        public static string FinancialTranstion_FullName = "FinacialTransaction";
+        public static string FinancialTranstion_PK = "financialtranstionid";
+
+
         public static string Meeting_Name = "Meeting";
         public static string Meeting_Description = "eSocial meeting for an event";
         public static string Meeting_FullName = "Meeting";
