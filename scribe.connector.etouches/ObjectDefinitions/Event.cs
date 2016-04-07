@@ -82,7 +82,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListEvents(Connection, this.ModifiedAfterDate, this.AttendeeModifiedAfterDate, null, this.KeyPairs);
+            var ds = DataServicesClient.ListEvents(Connection, this.ModifiedAfterDate, null, null, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateChildData(dataEntities);
             return dataEntities;

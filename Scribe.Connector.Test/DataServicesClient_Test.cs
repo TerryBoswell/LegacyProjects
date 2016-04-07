@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
 using System.Xml;
+using Scribe.Connector.etouches;
+
 namespace Scribe.Connector.Test
 {
     [TestClass]
@@ -59,7 +61,8 @@ namespace Scribe.Connector.Test
             var connector = createConnector();
             Assert.IsNotNull(connector);
             Assert.AreEqual(connector.IsConnected, true);
-            Assert.AreEqual(connector.IsV2Connected, true);       
+            if (Configuration.BidirectionalEnabled)
+                Assert.AreEqual(connector.IsV2Connected, true);       
         }
 
         #region Meta Data Tests
@@ -152,9 +155,13 @@ namespace Scribe.Connector.Test
         [TestMethod]
         public void TestListEvents()
         {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             VerifyAccessToken();
             var data = etouches.DataServicesClient.ListEvents(Connector.Connection);
             Assert.IsNotNull(data);
+            sw.Stop();
+
         }
 
         //[Ignore]

@@ -76,7 +76,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
 
                 //We have to make a presumption that we will key off the name last modified from our meta data
-                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{Constants.LastModifiedParameter}")
+                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($"{Constants.LastModifiedParameter}")
                     && lookupCondition.RightValue.Value != null)
                 {
                     System.DateTime d;
@@ -85,13 +85,13 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                 }
 
 
-                if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{Constants.AttendeeLastModifiedParameter}")
-                    && lookupCondition.RightValue.Value != null)
-                {
-                    System.DateTime d;
-                    if (System.DateTime.TryParse(lookupCondition.RightValue.Value.ToString(), out d))
-                        this.AttendeeModifiedAfterDate = d;
-                }
+                //if (lookupCondition.Operator == ComparisonOperator.Greater && lookupCondition.LeftValue.Value.ToString().Contains($".{Constants.AttendeeLastModifiedParameter}")
+                //    && lookupCondition.RightValue.Value != null)
+                //{
+                //    System.DateTime d;
+                //    if (System.DateTime.TryParse(lookupCondition.RightValue.Value.ToString(), out d))
+                //        this.AttendeeModifiedAfterDate = d;
+                //}
                 
             }
 

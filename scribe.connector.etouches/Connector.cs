@@ -34,6 +34,9 @@ namespace Scribe.Connector.etouches
             //attempt connection & set connection status
             this.IsConnected = this.Connection.TryConnect();
 
+            //A config file switch
+            if (!Configuration.BidirectionalEnabled)
+                return;
             try
             {
                 this.V2Connection = new ScribeConnection(properties, ScribeConnection.ConnectionVersion.V2);
@@ -158,7 +161,23 @@ namespace Scribe.Connector.etouches
                             IsRequired = true,
                             Label = "Page Size",
                             PropertyName = "PageSize"
-                        }                    } 
+                        },
+                        new EntryDefinition
+                        {
+                            InputType = InputType.Text,
+                            IsRequired = false,
+                            Label = "Base URL (leave blank for https://eiseverywhere.com)",
+                            PropertyName = "BaseUrl"
+                        },
+                        new EntryDefinition
+                        {
+                            InputType = InputType.Text,
+                            IsRequired = false,
+                            Label = "API URL (leave blank for https://eiseverywhere.com)",
+                            PropertyName = "V2Url"
+                        }
+
+                    } 
 
 
                 };

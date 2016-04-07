@@ -164,6 +164,7 @@ namespace Scribe.Connector.etouches
         {
             var hasMoreRecords = true;
             DataSet returnSet = new DataSet();
+            List<DataSet> sets = new List<DataSet>();
             int pageNumber = 1;
             while (hasMoreRecords)
             {
@@ -171,7 +172,7 @@ namespace Scribe.Connector.etouches
                 //While there are 
                 if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                 {
-                    returnSet.copyDataTable(ds);
+                    sets.Add(ds);
                     if (ds.Tables[0].Rows.Count < connection.PageSize)
                         hasMoreRecords = false;
                 }
@@ -179,6 +180,7 @@ namespace Scribe.Connector.etouches
                     hasMoreRecords = false;
                 pageNumber++;
             }
+            returnSet.copyDataTable(sets);
             return returnSet;
         }
 
@@ -203,6 +205,31 @@ namespace Scribe.Connector.etouches
                 copyTo.CopyRow(copyFrom, row);
             }
         }
+
+        private static void copyDataTable(this DataSet copyToDs, List<DataSet> listOfDS)
+        {
+            if (copyToDs == null)
+                copyToDs = new DataSet();
+            foreach (var copyFromDs in listOfDS)
+            {
+                if (copyToDs.Tables.Count == 0)
+                {
+                    copyToDs.Merge(copyFromDs);
+                }
+                else
+                {
+                    var copyTo = copyToDs.Tables[0];
+                    var copyFrom = copyFromDs.Tables[0];
+
+                    for (int j = 0; j < copyFrom.Rows.Count; j++)
+                    {
+                        var row = copyFrom.Rows[j];
+                        copyTo.CopyRow(copyFrom, row);
+                    }
+                }
+            }
+        }
+
 
         private static void CopyRow(this DataTable copyTo, DataTable copyFrom, DataRow row)
         {

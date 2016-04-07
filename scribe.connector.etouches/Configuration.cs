@@ -29,20 +29,29 @@ namespace Scribe.Connector.etouches
         }
 
 
-        public static string RestURL
+        public static bool BidirectionalEnabled
         {
             get
             {
-                return getConfig().AppSettings.Settings["RestURL"].Value;
+                bool biDir = false;
+                if (!bool.TryParse(getConfig().AppSettings.Settings["BidirectionalEnabled"].Value.ToString(), out biDir))
+                        return false;
+                return biDir;
             }
         }
 
-        public static string V2URL
+        public static bool FinancialTransactionsEnabled
         {
             get
             {
-                return getConfig().AppSettings.Settings["V2URL"].Value;
+                bool biDir = false;
+                if (!bool.TryParse(getConfig().AppSettings.Settings["FinancialTransactionsEnabled"].Value.ToString(), out biDir))
+                    return false;
+                return biDir;
             }
         }
+
+        
+        
     }
 }

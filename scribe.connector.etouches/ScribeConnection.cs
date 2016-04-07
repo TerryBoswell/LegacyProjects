@@ -95,20 +95,35 @@ namespace Scribe.Connector.etouches
 
             if (version == ConnectionVersion.V1)
             {
-                BaseUrl = Configuration.RestURL;
+                if (!String.IsNullOrEmpty(properties["BaseUrl"]))
+                {
+                    BaseUrl = properties["BaseUrl"];
+                }
+                else
+                {
+                    //use the default eiseverywhere.com
+                    var uri = new UriBuilder(BaseUrl);
+                    BaseUrl = uri.ToString();
+                    //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
+                    BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
+                }
             }
             else if (version == ConnectionVersion.V2)
             {
-                BaseUrl = Configuration.V2URL;
+                if (!String.IsNullOrEmpty(properties["V2Url"]))
+                {
+                    BaseUrl = properties["V2Url"];
+                }
+                else
+                {
+                    //use the default eiseverywhere.com
+                    var uri = new UriBuilder(BaseUrl);
+                    BaseUrl = uri.ToString();
+                    //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
+                    BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
+                }
             }
-            else
-            {
-                //use the default eiseverywhere.com
-                var uri = new UriBuilder(BaseUrl);
-                BaseUrl = uri.ToString();
-                //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
-                BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
-            }
+           
             history = new List<ConnectionHistory>();
         }
 

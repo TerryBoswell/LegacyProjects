@@ -201,7 +201,8 @@ namespace Scribe.Connector.etouches
         deleted (optional)
         fields (optional)
         pageNumber (optional)
-        pageSize (optional)        */
+        pageSize (optional)
+        */
         public static DataSet ListFinacialTransactions(ScribeConnection connection,
             Dictionary<string, string> keypairs = null)
         {

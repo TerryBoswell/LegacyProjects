@@ -58,7 +58,7 @@ namespace Scribe.Connector.etouches
 
         private IEnumerable<IObjectDefinition> getObjectDefintions()
         {
-            return new List<IObjectDefinition>
+            var returnSet = new List<IObjectDefinition>
             {
                 new ObjectDefinitions.Event(connection),
                 new ObjectDefinitions.Attendee(connection),
@@ -66,8 +66,7 @@ namespace Scribe.Connector.etouches
                 new ObjectDefinitions.Speaker(connection),
                 new ObjectDefinitions.Session(connection),
                 new ObjectDefinitions.Meeting(connection),
-                new ObjectDefinitions.SessionTrack(connection),
-                new ObjectDefinitions.FinancialTransaction(connection)                
+                new ObjectDefinitions.SessionTrack(connection)
                 //new ObjectDefinitions.Category(eventId),
                 //new ObjectDefinitions.Hotel(eventId),
                 //new ObjectDefinitions.Invoice(eventId),
@@ -76,6 +75,11 @@ namespace Scribe.Connector.etouches
                 //new ObjectDefinitions.RoomType(eventId),
                 //new ObjectDefinitions.Transaction(eventId),                
             };
+
+            if (Configuration.FinancialTransactionsEnabled)
+                returnSet.Add(new ObjectDefinitions.FinancialTransaction(connection));
+
+            return returnSet;
         }
 
         private IEnumerable<IActionDefinition> getActionDefintions()

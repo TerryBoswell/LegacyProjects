@@ -59,7 +59,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
         public static string LastModifiedParameter = "lastmodified";
 
-        public static string AttendeeLastModifiedParameter = "attendees_lastmodified";
+        //public static string AttendeeLastModifiedParameter = "attendees_lastmodified";
 
         public static string BuildChildRelationship(string parent, string child)
         {
