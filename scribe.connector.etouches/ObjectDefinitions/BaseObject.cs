@@ -15,15 +15,27 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         protected bool HasChildren;
         protected Dictionary<string, string> KeyPairs = new Dictionary<string, string>();
         protected List<string> ChildNames = new List<string>();
-        public BaseObject(ScribeConnection connection, string name, string fullName, string description)
+
+        public BaseObject(ScribeConnection connection, string name, string fullName, string description) :
+            this(connection, name, fullName, description, Constants.QueryAction.Query)
+        { }
+        public BaseObject(ScribeConnection connection, string name, string fullName, string description,
+            params Constants.QueryAction[] actions)
         {
             this.Connection = connection;
             FullName = fullName;
             Description = description;
             Hidden = false;
             Name = name;
-            SupportedActionFullNames = new List<string> { Constants.Action_Query };
+            SupportedActionFullNames = new List<string>();
+            if (actions == null || !actions.Any())
+                SupportedActionFullNames.Add(Constants.QueryAction.Query.ToString());
+            else
+                foreach (var a in actions)
+                    SupportedActionFullNames.Add(a.ToString());
         }
+
+
 
         virtual protected void SetPropertyDefinitions(JObject o)
         {
@@ -48,7 +60,9 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     PropertyType = (string)field["presentationType"],
                     UsedInQuerySelect = true,
                     UsedInLookupCondition = true,
-                    UsedInQueryConstraint = true
+                    UsedInQueryConstraint = true,
+                    UsedInActionInput = true,
+                    UsedInActionOutput = true
                 });
 
             }
@@ -110,5 +124,6 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             var filteredRows = table.Select(query.ToSelectExpression());
             return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
         }
+        
     }
 }

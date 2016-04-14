@@ -5,7 +5,7 @@ using Scribe.Core.ConnectorApi.ConnectionUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
+using static Scribe.Connector.etouches.ObjectDefinitions.Constants;
 
 namespace Scribe.Connector.etouches
 {
@@ -42,8 +42,10 @@ namespace Scribe.Connector.etouches
                 this.V2Connection = new ScribeConnection(properties, ScribeConnection.ConnectionVersion.V2);
                 this.IsV2Connected = this.V2Connection.TryConnect();
             }
-            catch 
-            { }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         
@@ -63,7 +65,22 @@ namespace Scribe.Connector.etouches
 
         public MethodResult ExecuteMethod(MethodInput input)
         {
+            if (input.Name == QueryAction.Create.ToString())
+                return executeCreate(input.Input);
             throw new NotImplementedException();
+        }
+
+        private MethodResult executeCreate(DataEntity entity)
+        {
+            switch (entity.ObjectDefinitionFullName)
+            {
+                case Constants.Event:
+                    return new ObjectDefinitions.Event(this.Connection).Create(entity);
+                default:
+                    throw new NotImplementedException();
+
+            }
+
         }
 
         public OperationResult ExecuteOperation(OperationInput input)
@@ -165,22 +182,21 @@ namespace Scribe.Connector.etouches
                         new EntryDefinition
                         {
                             InputType = InputType.Text,
-                            IsRequired = false,
+                            IsRequired = true,
                             Label = "Base URL (leave blank for https://eiseverywhere.com)",
                             PropertyName = "BaseUrl"
                         },
                         new EntryDefinition
                         {
                             InputType = InputType.Text,
-                            IsRequired = false,
-                            Label = "API URL (leave blank for https://eiseverywhere.com)",
+                            IsRequired = true,
+                            Label = "API V2 URL (leave blank for https://eiseverywhere.com)",
                             PropertyName = "V2Url"
                         }
+                    }
 
-                    } 
 
-
-                };
+            };
 
             return form.Serialize();
         }

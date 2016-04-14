@@ -3,6 +3,7 @@ using Scribe.Core.ConnectorApi.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Scribe.Connector.etouches.ObjectDefinitions.Constants;
 
 namespace Scribe.Connector.etouches
 {
@@ -89,11 +90,20 @@ namespace Scribe.Connector.etouches
                 new ActionDefinition
                 {
                     Description = "List Entities",
-                    FullName = "Query",
-                    Name = "Query",
+                    FullName = QueryAction.Query.ToString(),
+                    Name = QueryAction.Query.ToString(),
                     KnownActionType = KnownActions.Query,
                     SupportsConstraints = true,
                     SupportsRelations = true,
+                },
+                new ActionDefinition
+                {
+                    Description = "Create Entity",
+                    FullName = QueryAction.Create.ToString(),
+                    Name = QueryAction.Create.ToString(),
+                    KnownActionType = KnownActions.Create,
+                    SupportsConstraints = true,
+                    SupportsRelations = true
                 }
             };
         }

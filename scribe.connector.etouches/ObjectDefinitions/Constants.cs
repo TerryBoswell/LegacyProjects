@@ -9,7 +9,14 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     public static class Constants
     {
         #region Actions
-        public static string Action_Query = "Query";
+        public enum QueryAction
+        {
+            Query,
+            Create,
+            Update,
+            Delete
+        }
+
         #endregion
         #region Descriptors
         public static string Attendee_Name = "Attendee";
@@ -21,10 +28,12 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string RegSession_Description = "RegSession";
         public static string RegSession_PK = "regsessionid";
 
+        public const string Event = "Event";
         public static string Event_Name = "Event";
         public static string Event_FullName = "Event";
         public static string Event_Description = "A single Event";
         public static string Event_PK = "eventid";
+        public const string Event_NameProperty = "eventname";
 
         public static string FinancialTranstion_Name = "FinacialTransaction";
         public static string FinancialTranstion_Description = "eSocial Financial Transactions: Charges,Payments, Credits, Taxes";

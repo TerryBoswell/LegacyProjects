@@ -1,4 +1,5 @@
 ﻿using Scribe.Core.ConnectorApi;
+using Scribe.Core.ConnectorApi.Actions;
 using Scribe.Core.ConnectorApi.Metadata;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,9 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
     /// </summary>
     class Event : BaseObject
     {
-
         public Event(ScribeConnection connection) : base(connection,
-            Constants.Event_Name, Constants.Event_FullName, Constants.Event_Description)
+            Constants.Event_Name, Constants.Event_FullName, Constants.Event_Description, 
+            Constants.QueryAction.Query, Constants.QueryAction.Create)
         {
             RelationshipDefinitions = getRelationshipDefinitions();
             setPropertyDefinitions();
@@ -88,7 +89,17 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             return dataEntities;
         }
 
-        
+        internal MethodResult Create(DataEntity dataEntity)
+        {
+            if (!dataEntity.Properties.ContainsKey(Constants.Event_NameProperty))
+                throw new System.Exception("The data enitity is missing the name property");
+            var name = dataEntity.Properties[Constants.Event_NameProperty].ToString();
+            var result = DataServicesClient.CreateEvent(Connection, name);
+
+            //if (!result.HasError)
+            //    result = DataServicesClient.UpdateEvent()
+            return new MethodResult() {Success = !result.HasError};
+        }
 
         internal void PopulateChildData(IEnumerable<DataEntity> dataEntities)
         {

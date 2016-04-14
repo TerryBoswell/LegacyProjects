@@ -12,5 +12,23 @@ namespace Scribe.Connector.etouches.V2Results
 
         public int EventId { get; set; }
         public string Description { get; set; }
+
+        private bool hasError;
+
+        public bool HasError
+        {
+            get { return hasError; }
+        }
+        public object Error {
+            set
+            {
+                if (value != null)
+                    hasError = true;
+            }
+        }
+
+        
     }
+
+
 }

@@ -23,7 +23,7 @@ namespace Scribe.Connector.etouches
         internal int PageSize = 1024;
 
         private string apiKey = String.Empty;
-        private string subDomain = string.Empty;
+        //private string subDomain = string.Empty;
         private string uri = string.Empty;
 
         public enum ConnectionVersion
@@ -39,12 +39,8 @@ namespace Scribe.Connector.etouches
             this.Version = version;
 
             connectionKey = Guid.NewGuid();
-            var keyName = string.Empty;
-            if (version == ConnectionVersion.V1)
-                keyName = "AccountId";
-            else
-                keyName = "V2AccountId";
-
+            var keyName =  "AccountId";
+            
             Int32 numericResult = 0;
             if (properties.ContainsKey(keyName))
             { 
@@ -82,16 +78,14 @@ namespace Scribe.Connector.etouches
             }
 
             //retrieve the ApiKey, scribe's UI ensures its not empty
-            if (version == ConnectionVersion.V1 && properties.ContainsKey("ApiKey"))
+            if (properties.ContainsKey("ApiKey"))
                 this.apiKey = properties["ApiKey"];
-            else if (properties.ContainsKey("V2ApiKey"))
-                this.apiKey = properties["V2ApiKey"];
-
+            
             //retrieve the SubDomain, this can be empty
-            this.subDomain = properties["SubDomain"];
-            if (string.IsNullOrEmpty(subDomain)) subDomain = "www";
+            //this.subDomain = properties["SubDomain"];
+            //if (string.IsNullOrEmpty(subDomain)) subDomain = "www";
             //remove any trailing "."
-            if (subDomain.EndsWith(".")) subDomain = subDomain.Remove(subDomain.Length - 1);
+            //if (subDomain.EndsWith(".")) subDomain = subDomain.Remove(subDomain.Length - 1);
 
             if (version == ConnectionVersion.V1)
             {
@@ -105,12 +99,12 @@ namespace Scribe.Connector.etouches
                     var uri = new UriBuilder(BaseUrl);
                     BaseUrl = uri.ToString();
                     //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
-                    BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
+                    //BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
                 }
             }
             else if (version == ConnectionVersion.V2)
             {
-                if (!String.IsNullOrEmpty(properties["V2Url"]))
+                if (properties.ContainsKey("V2Url") && !String.IsNullOrEmpty(properties["V2Url"]))
                 {
                     BaseUrl = properties["V2Url"];
                 }
@@ -120,7 +114,7 @@ namespace Scribe.Connector.etouches
                     var uri = new UriBuilder(BaseUrl);
                     BaseUrl = uri.ToString();
                     //set the api URI context we'll be using for this connection (qa, supportqa, etc...)
-                    BaseUrl = String.Format(API_URI_PATTERN, this.subDomain);
+                    BaseUrl = String.Format(API_URI_PATTERN, string.Empty);
                 }
             }
            

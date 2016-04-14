@@ -4,19 +4,18 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Data;
 using System.Xml;
 using Scribe.Connector.etouches;
+using Scribe.Core.ConnectorApi.Actions;
 
 namespace Scribe.Connector.Test
 {
     [TestClass]
     public class DataServicesClient_Test
     {
-        private const string AccountId = "1";
-        private const string EventId = "34762";
-        private const string ApiKey = "ae9d6a1ff39db2e78eccd40bc2f6621bd052f990";
-        private const string BaseUrl = "https://stage-ds.etouches.com";
+        private const string AccountId = "14";
+        private const string EventId = "28922";
+        private const string ApiKey = "c5201698c7dc4d1228555b6802c06bf80e9faaf8";
+        private const string BaseUrl = "https://ds-prod.eiseverywhere.com";
 
-        private const string V2AccountId = "14";
-        private const string V2ApiKey = "7c6bcc4a49073fb9e199768774701f86bc872b9d";
         private const string V2BaseUrl = "https://www.eiseverywhere.com";
 
 
@@ -41,9 +40,7 @@ namespace Scribe.Connector.Test
             properties.Add("TTL", TTL);
             properties.Add("PageSize", PageSize);
 
-            properties.Add("V2AccountId", V2AccountId);
-            properties.Add("V2ApiKey", V2ApiKey);
-            properties.Add("V2BaseUrl", V2BaseUrl);
+            properties.Add("V2Url", V2BaseUrl);
 
             var connector = new Scribe.Connector.etouches.Connector();
             connector.Connect(properties);
@@ -350,6 +347,8 @@ namespace Scribe.Connector.Test
             var key = "eventid";
             Dictionary<string, string> keyPairs = getTestKeyPairs(data, key);
             data = etouches.DataServicesClient.ListMeetings(Connector.Connection);
+            if (data.Tables.Count == 0)
+                return;
             var table = data.Tables[0];
             Assert.IsTrue(table.Rows.Count > 0);
             var val = table.Rows[0][key].ToString();
@@ -396,7 +395,32 @@ namespace Scribe.Connector.Test
             VerifyAccessToken();
             var data = etouches.DataServicesClient.CreateEvent(Connector.V2Connection, Guid.NewGuid().ToString());
             Assert.IsNotNull(data);
-            Assert.IsTrue(data > 0);
+            Assert.IsTrue(data.EventId > 0);
+        }
+
+        [TestMethod]
+        public void TestCreateAndUpdateEvent()
+        {
+            VerifyAccessToken();
+            var name = Guid.NewGuid().ToString();
+            var data = etouches.DataServicesClient.CreateEvent(Connector.V2Connection, name);
+            Assert.IsNotNull(data);
+            Assert.IsTrue(data.EventId > 0);
+            data = etouches.DataServicesClient.UpdateEvent(Connector.V2Connection, data.EventId, name, name, "2016-01-01", "2017-12-12", "Test", "Some Guy", string.Empty, string.Empty);
+            Assert.IsFalse(data.HasError);
+        }
+
+
+        [TestMethod]
+        public void TestCreateEvent_ViaConnector()
+        {
+            var evtObjec = JsonDataFileHelper.GetObjectFromDisk<Core.ConnectorApi.DataEntity>("Event_OperationInput_.json");
+            MethodInput input = new MethodInput();
+            input.Name = "Create";
+            input.IsTestMethod = false;
+            input.Input = evtObjec;
+            Connector.ExecuteMethod((MethodInput)input);
+
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scribe.Core.ConnectorApi;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,8 @@ namespace Scribe.Connector.etouches
             SessionTrackMeta,
             MeetingMeta,
             FinancialTransactionMeta,
-            EventCreate
+            EventCreate, 
+            EventUpdate
         }
 
         public static string Name(this Actions a)
@@ -67,9 +69,23 @@ namespace Scribe.Connector.etouches
                     return "financialtransactionlist.json";
                 case Actions.EventCreate:
                     return "createEvent.json";
+                case Actions.EventUpdate:
+                    return "updateEvent.json";
                 default:
                     throw new ApplicationException("Unknown List");
             }
         }
+
+        public static bool IsNullOrEmpty(this string v)
+        {
+            return String.IsNullOrEmpty(v);
+        }
+
+        public static string GetProperty(this DataEntity entity, string key)
+        {
+            if (!entity.Properties.ContainsKey(key))
+                return string.Empty;
+            return entity.Properties[key].ToString();
+        } 
     }
 }

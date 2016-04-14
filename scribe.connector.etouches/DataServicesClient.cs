@@ -212,7 +212,7 @@ namespace Scribe.Connector.etouches
         #endregion
 
 
-        #region Post Events
+        #region Post/Put Events
 
         /*
         https://www.eiseverywhere.com/api/v2/ereg/createEvent.format
@@ -228,17 +228,71 @@ namespace Scribe.Connector.etouches
             modules
             optional	Array containing the names of modules to turn on for the event. Valid values are (case sensitive): 'eRFP', 'eBudget', 'eProject', 'eScheduler', 'eWiki', 'eHome', 'eMobile', 'eSelect', 'eReg', 'eBooth', 'eConnect', 'eSocial', 'eSeating'. rReg is always on by default.
         */
-        public static int CreateEvent(ScribeConnection connection, string name)
+        public static EventResult CreateEvent(ScribeConnection connection, string name)
         {
             Dictionary<string, string> keyPairs = new Dictionary<string, string>();
             keyPairs.Add("name", name);
 
             var e = DataUtility.DoPost<EventResult>(connection, Extensions.Actions.EventCreate, string.Empty, keyPairs);
 
-            return e.EventId;
+            return e;
+        }
+
+        /*
+         * https://www.eiseverywhere.com/api/v2/ereg/updateEvent.json
+         accesstoken
+            required	The access token assigned to you from the authorize function.
+            Example: Ub57+fu2p/4KcaqIRNUNQD9HV8nWid+7flRBxbskZIv/DWkaZG0+e6H6ZcjPaAoAGqOtjSq4tHh9ChxUChZdZw==
+            eventid
+            required	The event ID to put the data into, must be a numeric value.
+            name
+            optional	Update the event’s name.
+            eventid
+            optional	Update the event’s code.
+            startdate
+            optional	Update the event’s start date, dates need to be in ISO format.
+            Example: 2012-12-31
+            enddate
+            optional	Update the event’s end date, dates need to be in ISO format.
+            Example: 2012-12-31
+            locationname
+            optional	Update the event’s location name.
+            programmanager
+            optional	Update the event’s program manager.
+            status
+            optional	Update event status, allowed values: Archived, Cancelled, Closed, Live, On-site, Pre-Event, Sold Out
+            max_reg 
+            optional	Update "Maximum registrations" value
+         */
+        public static EventResult UpdateEvent(ScribeConnection connection, int eventId, string name, string code,
+            string startDate, string endDate, string locationName, string programManager, string status, 
+            string max_reg)
+        {
+            Dictionary<string, string> keyPairs = new Dictionary<string, string>();
+            keyPairs.Add("eventid", eventId.ToString());
+            if (!name.IsNullOrEmpty())
+                keyPairs.Add("name", name);
+            if (!code.IsNullOrEmpty())
+                keyPairs.Add("code", code);
+            if (!startDate.IsNullOrEmpty())
+                keyPairs.Add("startdate", startDate);
+            if (!endDate.IsNullOrEmpty())
+                keyPairs.Add("enddate", endDate);
+            if (!locationName.IsNullOrEmpty())
+                keyPairs.Add("locationname", locationName);
+            if (!programManager.IsNullOrEmpty())
+                keyPairs.Add("programmanager", programManager);
+            if (!status.IsNullOrEmpty())
+                keyPairs.Add("status", status);
+            if (!max_reg.IsNullOrEmpty())
+                keyPairs.Add("max_reg", max_reg);
+
+            var e = DataUtility.DoPut<EventResult>(connection, Extensions.Actions.EventUpdate, string.Empty, keyPairs);
+
+            return e;
         }
         #endregion
     }
 
-    
+
 }
