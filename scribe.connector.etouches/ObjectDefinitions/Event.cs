@@ -89,16 +89,45 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             return dataEntities;
         }
 
-        internal MethodResult Create(DataEntity dataEntity)
+        internal MethodResult Create(DataEntity dataEntity, ScribeConnection v2Connection)
         {
             if (!dataEntity.Properties.ContainsKey(Constants.Event_NameProperty))
                 throw new System.Exception("The data enitity is missing the name property");
             var name = dataEntity.Properties[Constants.Event_NameProperty].ToString();
-            var result = DataServicesClient.CreateEvent(Connection, name);
+            var result = DataServicesClient.CreateEvent(v2Connection, name);
 
-            //if (!result.HasError)
-            //    result = DataServicesClient.UpdateEvent()
-            return new MethodResult() {Success = !result.HasError};
+            if (result.HasError)
+                return new MethodResult() {Success = false, ErrorInfo = new ErrorResult() {
+                    Description = result.Error.ToString()
+                } };
+
+            return updateEvent(result.EventId, dataEntity);
+        }
+
+        private MethodResult updateEvent(int eventId, DataEntity entity)
+        {
+            var name = entity.GetProperty("eventname");
+            var code = entity.GetProperty("code");
+            var startDate = entity.GetDateProperty("starttime");
+            var endDate = entity.GetDateProperty("enddate");
+            var locationName = entity.GetProperty("locationname");
+            var programManager = entity.GetProperty("programmanager");
+            var max_reg = entity.GetProperty("max_reg");
+            var status = entity.GetProperty("eventstatus");
+            var result = DataServicesClient.UpdateEvent(Connection, eventId, name, code, startDate,
+                endDate, locationName, programManager, status, max_reg);
+
+            if (result.HasError)
+                return new MethodResult()
+                {
+                    Success = false,
+                    ErrorInfo = new ErrorResult()
+                    {
+                        Description = result.Error.ToString()
+                    }
+                };
+
+            return new MethodResult() { Success = !result.HasError };
         }
 
         internal void PopulateChildData(IEnumerable<DataEntity> dataEntities)
@@ -115,7 +144,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.Speaker_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Speaker_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.Speaker_Name, children);
                 }
@@ -125,7 +154,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.Session_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Session_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.Session_Name, children);
                 }
@@ -135,7 +164,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.Meeting_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.Meeting_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.Meeting_Name, children);
                 }
@@ -145,7 +174,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Event_PK} = {de.Properties[Constants.Event_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.FinancialTranstion_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.FinancialTranstion_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.FinancialTranstion_Name, children);
                 }

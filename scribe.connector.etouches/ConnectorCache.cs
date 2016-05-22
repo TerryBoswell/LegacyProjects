@@ -10,6 +10,17 @@ namespace Scribe.Connector.etouches
     public static class ConnectorCache
     {
         static readonly ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
+
+        public static string Generatekey(Guid connectionKey, string action, string accountId, string eventId = null,
+            string aQuery = null, Dictionary<string, string> keypairs = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null)
+        {
+            var key = $"{connectionKey}-{action}-{accountId}-{eventId}-{aQuery}-{modifiedAfter}-{modifiedBefore}";
+            if (keypairs != null && keypairs.Any())
+                foreach (var kp in keypairs)
+                    key = $"{key}-{kp.Key}-{kp.Value}";
+            return key;
+        }
+
         public static T GetCachedData<T>(string cacheKey)
         {
             //First we do a read lock to see if it already exists, this allows multiple readers at the same time.

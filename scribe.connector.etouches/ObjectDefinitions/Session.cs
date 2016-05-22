@@ -97,7 +97,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.RegSession_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.RegSession_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.RegSession_Name, children);
                 }
@@ -107,7 +107,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Session_PK} = {de.Properties[Constants.Session_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
-                    foreach (var c in filteredRows.ToDataEntities(Constants.SessionTrack_Name))
+                    foreach (var c in filteredRows.ToDataEntities(Constants.SessionTrack_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.SessionTrack_Name, children);
                 }

@@ -86,6 +86,18 @@ namespace Scribe.Connector.etouches
             if (!entity.Properties.ContainsKey(key))
                 return string.Empty;
             return entity.Properties[key].ToString();
-        } 
+        }
+
+        public static string GetDateProperty(this DataEntity entity, string key)
+        {
+            if (!entity.Properties.ContainsKey(key))
+                return string.Empty;
+            var data = entity.Properties[key].ToString();
+            DateTime value;
+            if (DateTime.TryParse(data, out value))
+                return value.ToString("yyyy-MM-dd");
+
+            return string.Empty;
+        }
     }
 }

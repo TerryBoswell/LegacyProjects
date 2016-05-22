@@ -61,9 +61,11 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             this.SetQuery(query);
             var ds = DataServicesClient.ListAttendees(this.Connection, this.ModifiedAfterDate, null, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
-            PopulateChildData(dataEntities);                         
+            PopulateChildData(dataEntities);
             return dataEntities;
         }
+
+       
 
         internal void PopulateChildData(IEnumerable<DataEntity> dataEntities)
         {
@@ -80,7 +82,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
                     foreach (
-                        var c in filteredRows.ToDataEntities(Constants.RegSession_Name))
+                        var c in filteredRows.ToDataEntities(Constants.RegSession_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.RegSession_Name, children);
                 }
@@ -92,7 +94,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
                     List<DataEntity> children = new List<DataEntity>();
                     foreach (
-                        var c in filteredRows.ToDataEntities(Constants.FinancialTranstion_Name))
+                        var c in filteredRows.ToDataEntities(Constants.FinancialTranstion_Name, this.PropertyDefinitions))
                         children.Add(c);
                     de.Children.Add(Constants.FinancialTranstion_Name, children);
                 }

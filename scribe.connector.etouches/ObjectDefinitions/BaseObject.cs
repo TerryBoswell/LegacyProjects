@@ -68,6 +68,8 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             }
         }
 
+       
+
         /// <summary>
         /// This method will set any parameters that can be passed directly
         /// to the restful web calls vs querying in memory
@@ -122,7 +124,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
             if (table.Rows.Count == 0)
                 return new List<DataEntity>();
             var filteredRows = table.Select(query.ToSelectExpression());
-            return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName);
+            return filteredRows.ToDataEntities(query.RootEntity.ObjectDefinitionFullName, this.PropertyDefinitions);
         }
         
     }

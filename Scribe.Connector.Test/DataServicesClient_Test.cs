@@ -11,9 +11,9 @@ namespace Scribe.Connector.Test
     [TestClass]
     public class DataServicesClient_Test
     {
-        private const string AccountId = "14";
-        private const string EventId = "28922";
-        private const string ApiKey = "c5201698c7dc4d1228555b6802c06bf80e9faaf8";
+        private const string AccountId = "3037";
+        private const string EventId = "86972";
+        private const string ApiKey = "0742cb104f8a632bcab90400a3d16b622715b70e";
         private const string BaseUrl = "https://ds-prod.eiseverywhere.com";
 
         private const string V2BaseUrl = "https://www.eiseverywhere.com";

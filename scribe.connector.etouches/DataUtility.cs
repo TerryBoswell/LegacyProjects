@@ -15,24 +15,12 @@ namespace Scribe.Connector.etouches
     {
         private static ConcurrentDictionary<string, ConcurrentBag<string>> DatasetKeys =
                                 new ConcurrentDictionary<string, ConcurrentBag<string>>();
-        private static string Generatekey(Guid connectionKey, string action, string accountId, string eventId = null,
-            string aQuery = null, Dictionary<string, string> keypairs = null, DateTime? modifiedAfter = null, DateTime? modifiedBefore = null)
-        {
-            var key = $"{connectionKey}-{action}-{accountId}-{eventId}-{aQuery}-{modifiedAfter}-{modifiedBefore}";
-            if (keypairs != null && keypairs.Any())
-                foreach (var kp in keypairs)
-                    key = $"{key}-{kp.Key}-{kp.Value}";
-            //Each Time we generate a key for all the parameters except key pairs we will store it in the DataSetKeys
-            //if (keypairs == null)
-            //    StoreGeneratedKey(connectionKey, action, key);
-            return key;
-        }
-
+        
         public static JObject GetJObject(ScribeConnection connection, Extensions.Actions action, string accountId = null,
             string eventId = null)
         {
             var strAction = action.Name();
-            var key = Generatekey(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, null, null);
+            var key = ConnectorCache.Generatekey(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, null, null);
             JObject json = ConnectorCache.GetCachedData<JObject>(key);
             if (json != null)
             {
@@ -69,7 +57,7 @@ namespace Scribe.Connector.etouches
         {
             var strAction = action.Name();
             var isKeyPairs = keypairs != null;
-            var key = Generatekey(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, null, keypairs);
+            var key = ConnectorCache.Generatekey(connection.ConnectionKey, strAction, connection.AccountId, connection.EventId, null, keypairs);
             DataSet ds = ConnectorCache.GetCachedData<DataSet>(key);
             if (ds != null)
                    return ds;

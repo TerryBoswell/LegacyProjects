@@ -75,7 +75,7 @@ namespace Scribe.Connector.etouches
             switch (entity.ObjectDefinitionFullName)
             {
                 case Constants.Event:
-                    return new ObjectDefinitions.Event(this.Connection).Create(entity);
+                    return new ObjectDefinitions.Event(this.Connection).Create(entity, this.V2Connection);
                 default:
                     throw new NotImplementedException();
 

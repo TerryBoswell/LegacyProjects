@@ -19,11 +19,18 @@ namespace Scribe.Connector.etouches.V2Results
         {
             get { return hasError; }
         }
+
+        object error;
         public object Error {
             set
             {
                 if (value != null)
                     hasError = true;
+                error = value;
+            }
+            get
+            {
+                return error;
             }
         }
 

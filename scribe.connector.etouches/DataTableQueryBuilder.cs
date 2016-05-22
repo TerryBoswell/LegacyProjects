@@ -1,4 +1,5 @@
 ﻿using Scribe.Core.ConnectorApi;
+using Scribe.Core.ConnectorApi.Metadata;
 using Scribe.Core.ConnectorApi.Query;
 using System;
 using System.Collections.Generic;
@@ -344,8 +345,12 @@ namespace Scribe.Connector.etouches
             return string.Format("'{0}'", value);
         }
 
-        public static IEnumerable<DataEntity> ToDataEntities(this DataRow[] rows, string entityName)
+        public static IEnumerable<DataEntity> ToDataEntities(this DataRow[] rows, string entityName, List<IPropertyDefinition> definition)
         {
+            Dictionary<string, string> propertyDefinitionTypes = new Dictionary<string, string>();
+            definition.ForEach(def => {
+                propertyDefinitionTypes.Add(def.Name, def.PresentationType);
+            });
             var list = new List<DataEntity>();
             foreach (DataRow row in rows)
             {
@@ -355,7 +360,18 @@ namespace Scribe.Connector.etouches
                 };
                 foreach (DataColumn col in row.Table.Columns)
                 {
-                    entity.Properties.Add(col.ColumnName, row[col]);
+                    var value = row[col];
+
+                    string type = string.Empty;
+                    if (propertyDefinitionTypes.ContainsKey(col.ColumnName))
+                    {
+                        type = propertyDefinitionTypes[col.ColumnName];
+                    }
+                    DateTime dt;
+                    if (type == "System.DateTime" && DateTime.TryParse(value.ToString(), out dt))
+                        entity.Properties.Add(col.ColumnName, dt);
+                    else
+                        entity.Properties.Add(col.ColumnName, value);
                 }
                 list.Add(entity);
             }
