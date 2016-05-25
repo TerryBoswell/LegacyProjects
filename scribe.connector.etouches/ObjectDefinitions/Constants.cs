@@ -35,9 +35,9 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         public static string Event_PK = "eventid";
         public const string Event_NameProperty = "eventname";
 
-        public static string FinancialTranstion_Name = "FinacialTransaction";
+        public static string FinancialTranstion_Name = "FinancialTransaction";
         public static string FinancialTranstion_Description = "eSocial Financial Transactions: Charges,Payments, Credits, Taxes";
-        public static string FinancialTranstion_FullName = "FinacialTransaction";
+        public static string FinancialTranstion_FullName = "FinancialTransaction";
         public static string FinancialTranstion_PK = "financialtranstionid";
 
 

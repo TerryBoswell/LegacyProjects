@@ -203,7 +203,7 @@ namespace Scribe.Connector.etouches
         pageNumber (optional)
         pageSize (optional)
         */
-        public static DataSet ListFinacialTransactions(ScribeConnection connection,
+        public static DataSet ListFinancialTransactions(ScribeConnection connection,
             Dictionary<string, string> keypairs = null)
         {
             return DataUtility.GetDataset(connection, Extensions.Actions.FinanacialTransaction, connection.EventId, null, null, null, keypairs);

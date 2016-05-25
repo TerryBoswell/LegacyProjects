@@ -61,7 +61,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
         internal IEnumerable<DataEntity> ExecuteQuery(Core.ConnectorApi.Query.Query query)
         {
             this.SetQuery(query);
-            var ds = DataServicesClient.ListFinacialTransactions(Connection, this.KeyPairs);
+            var ds = DataServicesClient.ListFinancialTransactions(Connection, this.KeyPairs);
             var dataEntities = GetDataEntites(ds, query);
             PopulateParentData(dataEntities);
             return dataEntities;

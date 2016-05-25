@@ -113,7 +113,7 @@ namespace Scribe.Connector.etouches
                 case "SessionTrack":
                     var sessiontrack = new ObjectDefinitions.SessionTrack(this.Connection);
                     return sessiontrack.ExecuteQuery(query);
-                case "FinacialTransaction":
+                case "FinancialTransaction":
                     var financialTransaction = new ObjectDefinitions.FinancialTransaction(this.Connection);
                     return financialTransaction.ExecuteQuery(query);
                     

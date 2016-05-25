@@ -89,7 +89,7 @@ namespace Scribe.Connector.etouches.ObjectDefinitions
 
                 if (this.ChildNames.Any(x => x.Equals(Constants.FinancialTranstion_Name)))
                 {
-                    var ds = DataServicesClient.ListFinacialTransactions(Connection);
+                    var ds = DataServicesClient.ListFinancialTransactions(Connection);
                     var table = ds.Tables["ResultSet"];
                     var filteredRows = table.Select($"{Constants.Attendee_PK} = {de.Properties[Constants.Attendee_PK]}");
                     List<DataEntity> children = new List<DataEntity>();

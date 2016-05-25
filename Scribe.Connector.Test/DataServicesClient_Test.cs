@@ -382,7 +382,7 @@ namespace Scribe.Connector.Test
         public void TestListFinancialTransactionss()
         {
             VerifyAccessToken();
-            var data = etouches.DataServicesClient.ListFinacialTransactions(Connector.Connection);
+            var data = etouches.DataServicesClient.ListFinancialTransactions(Connector.Connection);
             Assert.IsNotNull(data);
         }
         #endregion
